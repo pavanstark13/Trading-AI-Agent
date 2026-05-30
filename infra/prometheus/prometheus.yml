@@ -1,0 +1,65 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'trading-agent-monitor'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+rule_files: []
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'market-data'
+    static_configs:
+      - targets: ['market-data:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'strategy-engine'
+    static_configs:
+      - targets: ['strategy-engine:8002']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'risk-management'
+    static_configs:
+      - targets: ['risk-management:8003']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'execution-engine'
+    static_configs:
+      - targets: ['execution-engine:8004']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'ai-agent'
+    static_configs:
+      - targets: ['ai-agent:8005']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  - job_name: 'monitoring'
+    static_configs:
+      - targets: ['monitoring:8006']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:9113']
