@@ -1,59 +1,8 @@
-# Railway monorepo config
-# All services build from root so COPY shared/ works in every Dockerfile
-
 [build]
-builder = "dockerfile"
+builder = "DOCKERFILE"
+dockerfilePath = "services/ai_agent/Dockerfile"
 
-[[services]]
-name = "market-data"
-dockerfile = "services/market_data/Dockerfile"
-
-[services.deploy]
+[deploy]
 healthcheckPath = "/api/v1/health"
 healthcheckTimeout = 30
-restartPolicyType = "on_failure"
-
-[[services]]
-name = "strategy-engine"
-dockerfile = "services/strategy_engine/Dockerfile"
-
-[services.deploy]
-healthcheckPath = "/api/v1/health"
-healthcheckTimeout = 30
-restartPolicyType = "on_failure"
-
-[[services]]
-name = "risk-management"
-dockerfile = "services/risk_management/Dockerfile"
-
-[services.deploy]
-healthcheckPath = "/api/v1/health"
-healthcheckTimeout = 30
-restartPolicyType = "on_failure"
-
-[[services]]
-name = "execution-engine"
-dockerfile = "services/execution_engine/Dockerfile"
-
-[services.deploy]
-healthcheckPath = "/api/v1/health"
-healthcheckTimeout = 30
-restartPolicyType = "on_failure"
-
-[[services]]
-name = "ai-agent"
-dockerfile = "services/ai_agent/Dockerfile"
-
-[services.deploy]
-healthcheckPath = "/api/v1/health"
-healthcheckTimeout = 30
-restartPolicyType = "on_failure"
-
-[[services]]
-name = "monitoring"
-dockerfile = "services/monitoring/Dockerfile"
-
-[services.deploy]
-healthcheckPath = "/api/v1/health"
-healthcheckTimeout = 30
-restartPolicyType = "on_failure"
+restartPolicyType = "ON_FAILURE"
