@@ -1,5 +1,4 @@
 # Root Dockerfile — Railway uses this for the main service (ai-agent)
-# Each service has its own Dockerfile in services/<name>/Dockerfile
 
 FROM python:3.12-slim
 
