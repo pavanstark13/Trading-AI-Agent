@@ -27,10 +27,14 @@ jobs:
         working-directory: frontend
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-          vercel build --prod --token=$VERCEL_TOKEN
-          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+          # Deploy without project linking — Vercel auto-creates project on first deploy
+          vercel deploy --prod --token=$VERCEL_TOKEN --yes \
+            --name trading-ai-agent-dashboard \
+            -e VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
+            -e VITE_WS_URL=${{ secrets.VITE_WS_URL }} \
+            2>&1 | tee /tmp/vercel_output.txt
+
+          # Extract and print deployment URL
+          grep -E "https://.*vercel.app" /tmp/vercel_output.txt | tail -1 || true
           echo "✅ Frontend deployed to Vercel"
