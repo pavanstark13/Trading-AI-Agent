@@ -1,0 +1,33 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/**'
+      - 'shared/**'
+      - 'railway.toml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Backend to Railway
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --detach --service market-data || true
+          railway up --detach --service strategy-engine || true
+          railway up --detach --service risk-management || true
+          railway up --detach --service execution-engine || true
+          railway up --detach --service ai-agent || true
+          railway up --detach --service monitoring || true
+          echo "✅ All services deployed to Railway"

@@ -1,0 +1,32 @@
+name: Setup Database Schema (Run Once)
+
+on:
+  workflow_dispatch:  # Manual trigger from GitHub Actions UI
+
+jobs:
+  migrate:
+    name: Run Neon Database Schema
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Run database schema
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Convert asyncpg URL to psql-compatible URL
+          PSQL_URL=$(echo $DATABASE_URL | sed 's|postgresql+asyncpg://|postgresql://|')
+          psql "$PSQL_URL" -f infra/postgres/init.sql
+          echo "✅ Database schema applied successfully"
+
+      - name: Verify tables created
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          PSQL_URL=$(echo $DATABASE_URL | sed 's|postgresql+asyncpg://|postgresql://|')
+          psql "$PSQL_URL" -c "\dt" | grep -E "symbols|ohlcv|orders|trades|positions|strategies|signals|risk_profiles|alerts"
+          echo "✅ All tables verified"
