@@ -1,7 +1,7 @@
 name: Setup Database Schema (Run Once)
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub Actions UI
+  workflow_dispatch:
 
 jobs:
   migrate:
@@ -16,17 +16,26 @@ jobs:
 
       - name: Run database schema
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PGPASSWORD: "npg_V9Ww3NPUvzBL"
         run: |
-          # Convert asyncpg URL to psql-compatible URL
-          PSQL_URL=$(echo $DATABASE_URL | sed 's|postgresql+asyncpg://|postgresql://|')
-          psql "$PSQL_URL" -f infra/postgres/init.sql
+          psql \
+            "host=ep-floral-art-aowlextl-pooler.c-2.ap-southeast-1.aws.neon.tech \
+             port=5432 \
+             dbname=neondb \
+             user=neondb_owner \
+             sslmode=require" \
+            -f infra/postgres/init.sql
           echo "✅ Database schema applied successfully"
 
       - name: Verify tables created
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PGPASSWORD: "npg_V9Ww3NPUvzBL"
         run: |
-          PSQL_URL=$(echo $DATABASE_URL | sed 's|postgresql+asyncpg://|postgresql://|')
-          psql "$PSQL_URL" -c "\dt" | grep -E "symbols|ohlcv|orders|trades|positions|strategies|signals|risk_profiles|alerts"
-          echo "✅ All tables verified"
+          psql \
+            "host=ep-floral-art-aowlextl-pooler.c-2.ap-southeast-1.aws.neon.tech \
+             port=5432 \
+             dbname=neondb \
+             user=neondb_owner \
+             sslmode=require" \
+            -c "\dt"
+          echo "✅ Tables verified"
