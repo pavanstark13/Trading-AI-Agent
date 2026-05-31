@@ -1,32 +1,28 @@
-import { executionClient, riskClient } from './client';
-import type { DrawdownStatus, Order, Position, Trade } from '../types';
+import { agentClient } from './client';
+import type { Position, Trade } from '../types';
 
 export const portfolioApi = {
-  getPositions: async (): Promise<Position[]> => {
-    const { data } = await executionClient.get('/orders/positions');
+  getAccount: async (): Promise<{ equity: number; cash: number; buying_power: number; total_pnl: number; total_pnl_pct: number; day_pnl: number }> => {
+    const { data } = await agentClient.get('/portfolio/account');
     return data;
   },
 
-  getOrders: async (status?: string): Promise<Order[]> => {
-    const { data } = await executionClient.get('/orders', {
-      params: status ? { status } : {},
-    });
+  getPositions: async (): Promise<Position[]> => {
+    const { data } = await agentClient.get('/portfolio/positions');
     return data;
   },
 
   getTrades: async (limit = 50): Promise<Trade[]> => {
-    const { data } = await executionClient.get('/orders/trades', {
+    const { data } = await agentClient.get('/portfolio/trades', {
       params: { limit },
     });
     return data;
   },
 
-  getDrawdownStatus: async (equity: number): Promise<DrawdownStatus> => {
-    const { data } = await riskClient.get(`/risk/drawdown/${equity}`);
+  placeOrder: async (ticker: string, side: string, qty: number): Promise<unknown> => {
+    const { data } = await agentClient.post('/portfolio/orders', null, {
+      params: { ticker, side, qty },
+    });
     return data;
-  },
-
-  cancelOrder: async (externalOrderId: string): Promise<void> => {
-    await executionClient.delete(`/orders/${externalOrderId}`);
   },
 };

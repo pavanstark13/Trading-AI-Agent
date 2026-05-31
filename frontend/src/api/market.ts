@@ -1,26 +1,19 @@
-import { marketDataClient } from './client';
-import type { MarketQuote, OHLCVBar, Symbol } from '../types';
+import { agentClient } from './client';
+import type { MarketQuote, OHLCVBar } from '../types';
 
 export const marketApi = {
-  getSymbols: async (activeOnly = true): Promise<Symbol[]> => {
-    const { data } = await marketDataClient.get('/market/symbols', {
-      params: { active_only: activeOnly },
-    });
-    return data;
-  },
-
-  getSymbol: async (ticker: string): Promise<Symbol> => {
-    const { data } = await marketDataClient.get(`/market/symbols/${ticker}`);
+  getAssets: async (): Promise<{ stocks: string[]; crypto: string[]; forex: string[] }> => {
+    const { data } = await agentClient.get('/market/assets');
     return data;
   },
 
   getQuote: async (ticker: string): Promise<MarketQuote> => {
-    const { data } = await marketDataClient.get(`/market/quotes/${ticker}`);
+    const { data } = await agentClient.get(`/market/quotes/${ticker}`);
     return data;
   },
 
   getQuotes: async (tickers: string[]): Promise<MarketQuote[]> => {
-    const { data } = await marketDataClient.get('/market/quotes', {
+    const { data } = await agentClient.get('/market/quotes', {
       params: { tickers: tickers.join(',') },
     });
     return data;
@@ -28,14 +21,19 @@ export const marketApi = {
 
   getHistorical: async (
     ticker: string,
-    timeframe: string = '1h',
+    timeframe = '1h',
     start?: string,
     end?: string,
-    limit: number = 200
+    limit = 200,
   ): Promise<OHLCVBar[]> => {
-    const { data } = await marketDataClient.get(`/market/historical/${ticker}`, {
+    const { data } = await agentClient.get(`/market/historical/${ticker}`, {
       params: { timeframe, start, end, limit },
     });
+    return data;
+  },
+
+  getMarketStatus: async (): Promise<Record<string, unknown>> => {
+    const { data } = await agentClient.get('/market/market-status');
     return data;
   },
 };
