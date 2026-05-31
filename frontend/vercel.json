@@ -5,9 +5,5 @@
   "installCommand": "npm install",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "env": {
-    "VITE_API_BASE_URL": "@vite_api_base_url",
-    "VITE_WS_URL": "@vite_ws_url"
-  }
+  ]
 }
