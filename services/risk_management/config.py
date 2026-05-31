@@ -14,6 +14,6 @@ class RiskManagementSettings(Settings):
     default_max_drawdown: float = 0.15
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> RiskManagementSettings:
     return RiskManagementSettings()

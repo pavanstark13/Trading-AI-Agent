@@ -9,6 +9,7 @@ from httpx import ASGITransport, AsyncClient
 # These tests require the service to be importable
 try:
     from services.market_data.main import app
+
     APP_AVAILABLE = True
 except Exception:
     APP_AVAILABLE = False
@@ -21,10 +22,7 @@ class TestMarketDataAPI:
     @pytest_asyncio.fixture
     async def client(self):
         """Create async test client."""
-        async with AsyncClient(
-            transport=ASGITransport(app=app),
-            base_url="http://test"
-        ) as client:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             yield client
 
     @pytest.mark.asyncio
@@ -51,18 +49,20 @@ class TestMarketDataAPI:
     async def test_get_quotes_returns_list(self, client):
         """Get quotes should return a list."""
         with patch("services.market_data.services.data_fetcher.get_data_fetcher") as mock_fetcher:
-            mock_fetcher.return_value.get_quotes = AsyncMock(return_value=[
-                {
-                    "ticker": "AAPL",
-                    "bid": 150.0,
-                    "ask": 150.02,
-                    "last": 150.01,
-                    "change": 1.5,
-                    "change_pct": 0.01,
-                    "volume": 1000000,
-                    "timestamp": "2024-01-01T00:00:00Z",
-                }
-            ])
+            mock_fetcher.return_value.get_quotes = AsyncMock(
+                return_value=[
+                    {
+                        "ticker": "AAPL",
+                        "bid": 150.0,
+                        "ask": 150.02,
+                        "last": 150.01,
+                        "change": 1.5,
+                        "change_pct": 0.01,
+                        "volume": 1000000,
+                        "timestamp": "2024-01-01T00:00:00Z",
+                    }
+                ]
+            )
             response = await client.get("/api/v1/market/quotes?tickers=AAPL")
             assert response.status_code == 200
             data = response.json()

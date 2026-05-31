@@ -2,26 +2,26 @@
 
 import uuid
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import Field
 
 from shared.schemas.base import BaseSchema
 
 
-class OrderType(str, Enum):
+class OrderType(StrEnum):
     MARKET = "market"
     LIMIT = "limit"
     STOP = "stop"
     STOP_LIMIT = "stop_limit"
 
 
-class OrderSide(str, Enum):
+class OrderSide(StrEnum):
     BUY = "buy"
     SELL = "sell"
 
 
-class OrderStatus(str, Enum):
+class OrderStatus(StrEnum):
     PENDING = "pending"
     SUBMITTED = "submitted"
     PARTIAL = "partial"
@@ -30,7 +30,7 @@ class OrderStatus(str, Enum):
     REJECTED = "rejected"
 
 
-class TimeInForce(str, Enum):
+class TimeInForce(StrEnum):
     DAY = "day"
     GTC = "gtc"
     IOC = "ioc"

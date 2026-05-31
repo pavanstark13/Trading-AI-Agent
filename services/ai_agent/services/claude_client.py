@@ -94,11 +94,13 @@ class ClaudeClient:
         tool_uses = []
         for block in response.content:
             if block.type == "tool_use":
-                tool_uses.append({
-                    "id": block.id,
-                    "name": block.name,
-                    "input": block.input,
-                })
+                tool_uses.append(
+                    {
+                        "id": block.id,
+                        "name": block.name,
+                        "input": block.input,
+                    }
+                )
         return tool_uses
 
     async def chat_with_tools(
@@ -139,31 +141,39 @@ class ClaudeClient:
                 logger.info("Executing tool", name=tool_call["name"], round=round_num)
                 try:
                     result = await tool_executor(tool_call["name"], tool_call["input"])
-                    tool_results.append({
-                        "type": "tool_result",
-                        "tool_use_id": tool_call["id"],
-                        "content": str(result),
-                    })
-                    tool_history.append({
-                        "tool": tool_call["name"],
-                        "input": tool_call["input"],
-                        "result": result,
-                    })
+                    tool_results.append(
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": tool_call["id"],
+                            "content": str(result),
+                        }
+                    )
+                    tool_history.append(
+                        {
+                            "tool": tool_call["name"],
+                            "input": tool_call["input"],
+                            "result": result,
+                        }
+                    )
                 except Exception as e:
                     logger.error("Tool execution failed", tool=tool_call["name"], error=str(e))
-                    tool_results.append({
-                        "type": "tool_result",
-                        "tool_use_id": tool_call["id"],
-                        "content": f"Error: {e}",
-                        "is_error": True,
-                    })
+                    tool_results.append(
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": tool_call["id"],
+                            "content": f"Error: {e}",
+                            "is_error": True,
+                        }
+                    )
 
             # Add assistant message and tool results to conversation
             messages.append({"role": "assistant", "content": response.content})
             messages.append({"role": "user", "content": tool_results})
 
         # Fallback: get final response
-        response = await self.chat(system_prompt=system_prompt, messages=messages, use_prompt_cache=True)
+        response = await self.chat(
+            system_prompt=system_prompt, messages=messages, use_prompt_cache=True
+        )
         return self.extract_text(response), tool_history
 
 

@@ -1,6 +1,6 @@
 """Metrics collection service."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 from prometheus_client import Counter, Gauge, Histogram
@@ -40,7 +40,7 @@ class MetricsCollector:
         """Record a metric to the database and update Prometheus gauges."""
         from sqlalchemy import text  # noqa: PLC0415
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         try:
             await self.session.execute(
                 text("""

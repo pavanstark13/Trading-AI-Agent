@@ -1,11 +1,10 @@
 """Drawdown monitor - tracks equity curve and drawdown levels."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 
 from services.risk_management.domain.schemas import DrawdownStatus
-from shared.exceptions import MaxDrawdownError
 from shared.redis_client import RedisCache
 
 logger = structlog.get_logger(__name__)
@@ -86,10 +85,13 @@ class DrawdownMonitor:
             )
 
         # Store equity history
-        await self._cache.lpush(CACHE_KEY_EQUITY_HISTORY, {
-            "equity": current_equity,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-        })
+        await self._cache.lpush(
+            CACHE_KEY_EQUITY_HISTORY,
+            {
+                "equity": current_equity,
+                "timestamp": datetime.now(UTC).isoformat(),
+            },
+        )
 
         return DrawdownStatus(
             current_equity=round(current_equity, 2),

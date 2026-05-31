@@ -1,52 +1,59 @@
+# Railway monorepo config
+# All services build from root so COPY shared/ works in every Dockerfile
+
 [build]
 builder = "dockerfile"
 
 [[services]]
 name = "market-data"
-source = "services/market_data"
 dockerfile = "services/market_data/Dockerfile"
+
 [services.deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8001}"
 healthcheckPath = "/api/v1/health"
 healthcheckTimeout = 30
 restartPolicyType = "on_failure"
 
 [[services]]
 name = "strategy-engine"
-source = "services/strategy_engine"
 dockerfile = "services/strategy_engine/Dockerfile"
+
 [services.deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8002}"
 healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
 
 [[services]]
 name = "risk-management"
-source = "services/risk_management"
 dockerfile = "services/risk_management/Dockerfile"
+
 [services.deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8003}"
 healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
 
 [[services]]
 name = "execution-engine"
-source = "services/execution_engine"
 dockerfile = "services/execution_engine/Dockerfile"
+
 [services.deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8004}"
 healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
 
 [[services]]
 name = "ai-agent"
-source = "services/ai_agent"
 dockerfile = "services/ai_agent/Dockerfile"
+
 [services.deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8005}"
 healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
 
 [[services]]
 name = "monitoring"
-source = "services/monitoring"
 dockerfile = "services/monitoring/Dockerfile"
+
 [services.deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8006}"
 healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"

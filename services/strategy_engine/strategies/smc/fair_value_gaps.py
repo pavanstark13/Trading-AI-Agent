@@ -75,11 +75,13 @@ class FairValueGapStrategy(BaseStrategy):
         tr = np.zeros(n)
         tr[0] = highs[0] - lows[0]
         for i in range(1, n):
-            tr[i] = max(highs[i] - lows[i], abs(highs[i] - closes[i-1]), abs(lows[i] - closes[i-1]))
+            tr[i] = max(
+                highs[i] - lows[i], abs(highs[i] - closes[i - 1]), abs(lows[i] - closes[i - 1])
+            )
         atr = np.zeros(n)
         atr[period - 1] = np.mean(tr[:period])
         for i in range(period, n):
-            atr[i] = (atr[i-1] * (period - 1) + tr[i]) / period
+            atr[i] = (atr[i - 1] * (period - 1) + tr[i]) / period
         return atr
 
     def _detect_fvgs(
@@ -135,11 +137,12 @@ class FairValueGapStrategy(BaseStrategy):
         # Mark filled FVGs
         for fvg in fvgs:
             for j in range(fvg.index + 2, len(candles)):
-                if fvg.direction == "bullish" and lows[j] <= fvg.top:
-                    fvg.is_filled = True
-                    fvg.fill_index = j
-                    break
-                elif fvg.direction == "bearish" and highs[j] >= fvg.bottom:
+                if (
+                    fvg.direction == "bullish"
+                    and lows[j] <= fvg.top
+                    or fvg.direction == "bearish"
+                    and highs[j] >= fvg.bottom
+                ):
                     fvg.is_filled = True
                     fvg.fill_index = j
                     break
@@ -178,21 +181,23 @@ class FairValueGapStrategy(BaseStrategy):
                     risk = current_price - stop_loss
                     take_profit = current_price + risk * 2.0
 
-                    signals.append(StrategySignal(
-                        signal_type="entry",
-                        direction="long",
-                        strength=strength,
-                        price=current_price,
-                        stop_loss=round(stop_loss, 6),
-                        take_profit=round(take_profit, 6),
-                        metadata={
-                            "fvg_top": fvg.top,
-                            "fvg_bottom": fvg.bottom,
-                            "fvg_size_atr": fvg.size_atr,
-                            "fvg_timestamp": fvg.timestamp.isoformat(),
-                            "strategy": "fair_value_gap",
-                        },
-                    ))
+                    signals.append(
+                        StrategySignal(
+                            signal_type="entry",
+                            direction="long",
+                            strength=strength,
+                            price=current_price,
+                            stop_loss=round(stop_loss, 6),
+                            take_profit=round(take_profit, 6),
+                            metadata={
+                                "fvg_top": fvg.top,
+                                "fvg_bottom": fvg.bottom,
+                                "fvg_size_atr": fvg.size_atr,
+                                "fvg_timestamp": fvg.timestamp.isoformat(),
+                                "strategy": "fair_value_gap",
+                            },
+                        )
+                    )
 
             elif fvg.direction == "bearish":
                 # Bearish FVG acts as resistance - sell when price enters the gap
@@ -201,21 +206,23 @@ class FairValueGapStrategy(BaseStrategy):
                     risk = stop_loss - current_price
                     take_profit = current_price - risk * 2.0
 
-                    signals.append(StrategySignal(
-                        signal_type="entry",
-                        direction="short",
-                        strength=strength,
-                        price=current_price,
-                        stop_loss=round(stop_loss, 6),
-                        take_profit=round(take_profit, 6),
-                        metadata={
-                            "fvg_top": fvg.top,
-                            "fvg_bottom": fvg.bottom,
-                            "fvg_size_atr": fvg.size_atr,
-                            "fvg_timestamp": fvg.timestamp.isoformat(),
-                            "strategy": "fair_value_gap",
-                        },
-                    ))
+                    signals.append(
+                        StrategySignal(
+                            signal_type="entry",
+                            direction="short",
+                            strength=strength,
+                            price=current_price,
+                            stop_loss=round(stop_loss, 6),
+                            take_profit=round(take_profit, 6),
+                            metadata={
+                                "fvg_top": fvg.top,
+                                "fvg_bottom": fvg.bottom,
+                                "fvg_size_atr": fvg.size_atr,
+                                "fvg_timestamp": fvg.timestamp.isoformat(),
+                                "strategy": "fair_value_gap",
+                            },
+                        )
+                    )
 
         return signals
 

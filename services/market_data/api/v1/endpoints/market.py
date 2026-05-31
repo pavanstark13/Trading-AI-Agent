@@ -1,6 +1,6 @@
 """Market data API endpoints."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from services.market_data.domain.repositories import SymbolRepository
 from services.market_data.domain.schemas import (
-    HistoricalDataRequest,
     MarketQuote,
     OHLCVResponse,
     SymbolCreate,
@@ -19,7 +18,6 @@ from services.market_data.services.data_fetcher import get_data_fetcher
 from services.market_data.services.historical import HistoricalDataService
 from shared.database import get_db
 from shared.exceptions import RecordNotFoundError, SymbolNotFoundError
-from shared.schemas.base import PaginatedResponse, SuccessResponse
 
 router = APIRouter()
 logger = structlog.get_logger(__name__)
@@ -103,7 +101,8 @@ async def get_historical(
     """Get historical OHLCV bars for a symbol."""
     if start is None:
         from datetime import timedelta  # noqa: PLC0415
-        start = datetime.now(timezone.utc) - timedelta(days=30)
+
+        start = datetime.now(UTC) - timedelta(days=30)
 
     service = HistoricalDataService(db)
     try:

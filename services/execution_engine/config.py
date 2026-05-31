@@ -12,6 +12,6 @@ class ExecutionEngineSettings(Settings):
     order_timeout_seconds: int = 30
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> ExecutionEngineSettings:
     return ExecutionEngineSettings()

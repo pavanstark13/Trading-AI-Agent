@@ -49,7 +49,7 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
     def _sma(self, closes: np.ndarray, period: int) -> np.ndarray:
         sma = np.full(len(closes), np.nan)
         for i in range(period - 1, len(closes)):
-            sma[i] = np.mean(closes[i - period + 1: i + 1])
+            sma[i] = np.mean(closes[i - period + 1 : i + 1])
         return sma
 
     def _ema(self, closes: np.ndarray, period: int) -> np.ndarray:
@@ -72,7 +72,12 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
 
         # Check most recent crossover (last 3 bars)
         for i in range(max(1, len(candles) - 3), len(candles)):
-            if np.isnan(fast_ma[i]) or np.isnan(slow_ma[i]) or np.isnan(fast_ma[i-1]) or np.isnan(slow_ma[i-1]):
+            if (
+                np.isnan(fast_ma[i])
+                or np.isnan(slow_ma[i])
+                or np.isnan(fast_ma[i - 1])
+                or np.isnan(slow_ma[i - 1])
+            ):
                 continue
 
             current_price = closes[i]
@@ -84,50 +89,54 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
                 continue
 
             # Bullish crossover: fast crosses above slow
-            if fast_ma[i] > slow_ma[i] and fast_ma[i-1] <= slow_ma[i-1]:
+            if fast_ma[i] > slow_ma[i] and fast_ma[i - 1] <= slow_ma[i - 1]:
                 atr = self._estimate_atr_simple(closes, i)
                 stop_loss = current_price - atr * 2.0
                 take_profit = current_price + atr * 4.0
 
-                signals.append(StrategySignal(
-                    signal_type="entry",
-                    direction="long",
-                    strength=strength,
-                    price=current_price,
-                    stop_loss=round(stop_loss, 6),
-                    take_profit=round(take_profit, 6),
-                    metadata={
-                        "fast_ma": round(float(fast_ma[i]), 4),
-                        "slow_ma": round(float(slow_ma[i]), 4),
-                        "crossover_type": "bullish",
-                        "strategy": "ma_crossover",
-                    },
-                ))
+                signals.append(
+                    StrategySignal(
+                        signal_type="entry",
+                        direction="long",
+                        strength=strength,
+                        price=current_price,
+                        stop_loss=round(stop_loss, 6),
+                        take_profit=round(take_profit, 6),
+                        metadata={
+                            "fast_ma": round(float(fast_ma[i]), 4),
+                            "slow_ma": round(float(slow_ma[i]), 4),
+                            "crossover_type": "bullish",
+                            "strategy": "ma_crossover",
+                        },
+                    )
+                )
 
             # Bearish crossover: fast crosses below slow
-            elif fast_ma[i] < slow_ma[i] and fast_ma[i-1] >= slow_ma[i-1]:
+            elif fast_ma[i] < slow_ma[i] and fast_ma[i - 1] >= slow_ma[i - 1]:
                 atr = self._estimate_atr_simple(closes, i)
                 stop_loss = current_price + atr * 2.0
                 take_profit = current_price - atr * 4.0
 
-                signals.append(StrategySignal(
-                    signal_type="entry",
-                    direction="short",
-                    strength=strength,
-                    price=current_price,
-                    stop_loss=round(stop_loss, 6),
-                    take_profit=round(take_profit, 6),
-                    metadata={
-                        "fast_ma": round(float(fast_ma[i]), 4),
-                        "slow_ma": round(float(slow_ma[i]), 4),
-                        "crossover_type": "bearish",
-                        "strategy": "ma_crossover",
-                    },
-                ))
+                signals.append(
+                    StrategySignal(
+                        signal_type="entry",
+                        direction="short",
+                        strength=strength,
+                        price=current_price,
+                        stop_loss=round(stop_loss, 6),
+                        take_profit=round(take_profit, 6),
+                        metadata={
+                            "fast_ma": round(float(fast_ma[i]), 4),
+                            "slow_ma": round(float(slow_ma[i]), 4),
+                            "crossover_type": "bearish",
+                            "strategy": "ma_crossover",
+                        },
+                    )
+                )
 
         return signals
 
     def _estimate_atr_simple(self, closes: np.ndarray, idx: int, period: int = 14) -> float:
         start = max(1, idx - period)
-        diffs = np.abs(np.diff(closes[start: idx + 1]))
+        diffs = np.abs(np.diff(closes[start : idx + 1]))
         return float(np.mean(diffs)) if len(diffs) > 0 else closes[idx] * 0.01

@@ -1,11 +1,10 @@
 """Loss limiter - circuit breaker for daily and trade loss limits."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 
 from services.risk_management.domain.schemas import RiskCheckRequest, RiskCheckResponse
-from shared.exceptions import DailyLossLimitError, RiskLimitBreachedError
 from shared.redis_client import RedisCache
 
 logger = structlog.get_logger(__name__)
@@ -45,7 +44,9 @@ class LossLimiter:
 
         # Check daily loss limit
         if request.account_equity > 0:
-            daily_loss_pct = -request.daily_pnl / request.account_equity if request.daily_pnl < 0 else 0.0
+            daily_loss_pct = (
+                -request.daily_pnl / request.account_equity if request.daily_pnl < 0 else 0.0
+            )
             if daily_loss_pct >= self.daily_loss_limit_pct:
                 reasons.append(
                     f"Daily loss limit reached: {daily_loss_pct:.1%} >= {self.daily_loss_limit_pct:.1%}"
@@ -92,10 +93,14 @@ class LossLimiter:
 
     async def activate_circuit_breaker(self, reason: str) -> None:
         """Activate the circuit breaker to halt all trading."""
-        await self._cache.set("circuit_breaker_active", {
-            "activated_at": datetime.now(timezone.utc).isoformat(),
-            "reason": reason,
-        }, ttl=86400)
+        await self._cache.set(
+            "circuit_breaker_active",
+            {
+                "activated_at": datetime.now(UTC).isoformat(),
+                "reason": reason,
+            },
+            ttl=86400,
+        )
         logger.critical("CIRCUIT BREAKER ACTIVATED", reason=reason)
 
     async def deactivate_circuit_breaker(self) -> None:

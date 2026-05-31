@@ -6,7 +6,9 @@ from typing import Any
 class TradingBaseException(Exception):
     """Base exception for all trading platform exceptions."""
 
-    def __init__(self, message: str, code: str = "TRADING_ERROR", details: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self, message: str, code: str = "TRADING_ERROR", details: dict[str, Any] | None = None
+    ) -> None:
         super().__init__(message)
         self.message = message
         self.code = code
@@ -14,6 +16,7 @@ class TradingBaseException(Exception):
 
 
 # ── Data Layer Exceptions ────────────────────────────────────────────────────
+
 
 class DatabaseError(TradingBaseException):
     """Database operation error."""
@@ -46,6 +49,7 @@ class DuplicateRecordError(DatabaseError):
 
 # ── Market Data Exceptions ───────────────────────────────────────────────────
 
+
 class MarketDataError(TradingBaseException):
     """Market data service error."""
 
@@ -71,6 +75,7 @@ class DataFetchError(MarketDataError):
 
 # ── Strategy Exceptions ──────────────────────────────────────────────────────
 
+
 class StrategyError(TradingBaseException):
     """Strategy engine error."""
 
@@ -92,6 +97,7 @@ class InsufficientDataError(StrategyError):
 
 
 # ── Risk Management Exceptions ───────────────────────────────────────────────
+
 
 class RiskError(TradingBaseException):
     """Risk management error."""
@@ -129,6 +135,7 @@ class MaxDrawdownError(RiskLimitBreachedError):
 
 # ── Execution Exceptions ─────────────────────────────────────────────────────
 
+
 class ExecutionError(TradingBaseException):
     """Order execution error."""
 
@@ -157,6 +164,7 @@ class BrokerConnectionError(ExecutionError):
 
 # ── AI Agent Exceptions ──────────────────────────────────────────────────────
 
+
 class AgentError(TradingBaseException):
     """AI agent error."""
 
@@ -184,6 +192,7 @@ class ContextBuildError(AgentError):
 
 
 # ── Validation Exceptions ────────────────────────────────────────────────────
+
 
 class ValidationError(TradingBaseException):
     """Input validation error."""

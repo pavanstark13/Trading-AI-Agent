@@ -1,6 +1,6 @@
 """Orchestrator Agent - coordinates the multi-agent trading system."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import structlog
@@ -10,7 +10,6 @@ from services.ai_agent.agents.market_analyst import MarketAnalystAgent
 from services.ai_agent.agents.performance_reviewer import PerformanceReviewerAgent
 from services.ai_agent.agents.risk_manager import RiskManagerAgent
 from services.ai_agent.agents.trade_executor import TradeExecutorAgent
-from services.ai_agent.services.claude_client import get_claude_client
 from services.ai_agent.services.context_builder import ContextBuilder
 
 logger = structlog.get_logger(__name__)
@@ -78,12 +77,12 @@ Coordinate efficiently and make decisive, well-reasoned trading decisions."""
         Returns:
             Complete cycle results with all agent outputs
         """
-        cycle_id = f"cycle_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
+        cycle_id = f"cycle_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}"
         logger.info("Starting trading cycle", cycle_id=cycle_id, tickers=tickers)
 
         results: dict[str, Any] = {
             "cycle_id": cycle_id,
-            "started_at": datetime.now(timezone.utc).isoformat(),
+            "started_at": datetime.now(UTC).isoformat(),
             "tickers": tickers,
             "account_equity": account_equity,
         }
@@ -92,10 +91,12 @@ Coordinate efficiently and make decisive, well-reasoned trading decisions."""
         logger.info("Step 1: Running market analysis")
         try:
             market_context = await self._context_builder.build_full_context(tickers, account_equity)
-            market_result = await self._market_analyst.run({
-                "tickers": tickers,
-                **market_context,
-            })
+            market_result = await self._market_analyst.run(
+                {
+                    "tickers": tickers,
+                    **market_context,
+                }
+            )
             results["market_analysis"] = market_result
         except Exception as e:
             logger.error("Market analysis step failed", error=str(e))
@@ -105,11 +106,13 @@ Coordinate efficiently and make decisive, well-reasoned trading decisions."""
         logger.info("Step 2: Running risk assessment")
         try:
             portfolio_context = await self._context_builder.build_portfolio_context()
-            risk_result = await self._risk_manager.run({
-                "account_equity": account_equity,
-                "portfolio": portfolio_context,
-                "proposed_trades": results.get("market_analysis", {}).get("analysis", ""),
-            })
+            risk_result = await self._risk_manager.run(
+                {
+                    "account_equity": account_equity,
+                    "portfolio": portfolio_context,
+                    "proposed_trades": results.get("market_analysis", {}).get("analysis", ""),
+                }
+            )
             results["risk_assessment"] = risk_result
         except Exception as e:
             logger.error("Risk assessment step failed", error=str(e))
@@ -119,10 +122,12 @@ Coordinate efficiently and make decisive, well-reasoned trading decisions."""
         if execute_trades:
             logger.info("Step 3: Executing trades")
             try:
-                execution_result = await self._trade_executor.run({
-                    "approved_trades": results.get("risk_assessment", {}).get("decision", ""),
-                    "market_analysis": results.get("market_analysis", {}).get("analysis", ""),
-                })
+                execution_result = await self._trade_executor.run(
+                    {
+                        "approved_trades": results.get("risk_assessment", {}).get("decision", ""),
+                        "market_analysis": results.get("market_analysis", {}).get("analysis", ""),
+                    }
+                )
                 results["execution"] = execution_result
             except Exception as e:
                 logger.error("Execution step failed", error=str(e))
@@ -130,7 +135,7 @@ Coordinate efficiently and make decisive, well-reasoned trading decisions."""
         else:
             results["execution"] = {"skipped": True, "reason": "execute_trades=False"}
 
-        results["completed_at"] = datetime.now(timezone.utc).isoformat()
+        results["completed_at"] = datetime.now(UTC).isoformat()
         logger.info("Trading cycle completed", cycle_id=cycle_id)
         return results
 
@@ -141,11 +146,15 @@ Coordinate efficiently and make decisive, well-reasoned trading decisions."""
         execute_trades = context.get("execute_trades", False)
         return await self.run_full_cycle(tickers, account_equity, execute_trades)
 
-    async def review_performance(self, trade_history: list[dict], time_period: str = "last 7 days") -> dict[str, Any]:
+    async def review_performance(
+        self, trade_history: list[dict], time_period: str = "last 7 days"
+    ) -> dict[str, Any]:
         """Run performance review cycle."""
         portfolio = await self._context_builder.build_portfolio_context()
-        return await self._performance_reviewer.run({
-            "trade_history": trade_history,
-            "time_period": time_period,
-            "portfolio": portfolio,
-        })
+        return await self._performance_reviewer.run(
+            {
+                "trade_history": trade_history,
+                "time_period": time_period,
+                "portfolio": portfolio,
+            }
+        )

@@ -1,10 +1,9 @@
 """Alerting service - creates and manages trading alerts."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
-from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.redis_client import RedisCache
@@ -27,10 +26,10 @@ class AlertingService:
         metadata: dict | None = None,
     ) -> dict:
         """Create a new alert and publish to Redis."""
-        from sqlalchemy import insert, text  # noqa: PLC0415
+        from sqlalchemy import text  # noqa: PLC0415
 
         alert_id = uuid.uuid4()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         try:
             await self.session.execute(
@@ -75,7 +74,7 @@ class AlertingService:
         """Acknowledge an alert."""
         from sqlalchemy import text  # noqa: PLC0415
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         result = await self.session.execute(
             text("UPDATE alerts SET acknowledged = TRUE, ack_at = :now WHERE id = :id"),
             {"id": str(alert_id), "now": now},

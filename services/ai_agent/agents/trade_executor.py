@@ -62,6 +62,7 @@ Provide clear execution decisions with order details. When uncertain, request co
     async def execute_tool(self, tool_name: str, tool_input: dict[str, Any]) -> Any:
         """Execute trading tools."""
         import httpx  # noqa: PLC0415
+
         from services.ai_agent.config import get_settings  # noqa: PLC0415
 
         s = get_settings()
@@ -75,9 +76,7 @@ Provide clear execution decisions with order details. When uncertain, request co
 
             elif tool_name == "cancel_order":
                 order_id = tool_input.get("external_order_id")
-                resp = await client.delete(
-                    f"{s.execution_engine_url}/api/v1/orders/{order_id}"
-                )
+                resp = await client.delete(f"{s.execution_engine_url}/api/v1/orders/{order_id}")
                 return resp.json() if resp.status_code == 200 else {"error": resp.text}
 
             elif tool_name == "get_current_price":

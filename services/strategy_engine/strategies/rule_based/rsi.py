@@ -113,26 +113,32 @@ class RSIMeanReversionStrategy(BaseStrategy):
                     stop_loss = current_price - atr * 1.5
                     take_profit = current_price + atr * 3.0
 
-                    signals.append(StrategySignal(
-                        signal_type="entry",
-                        direction="long",
-                        strength=round(strength, 4),
-                        price=current_price,
-                        stop_loss=round(stop_loss, 6),
-                        take_profit=round(take_profit, 6),
-                        metadata={
-                            "rsi": round(float(current_rsi), 2),
-                            "rsi_level": "extreme_oversold" if current_rsi < extreme_oversold else "oversold",
-                            "strategy": "rsi_mean_reversion",
-                        },
-                    ))
+                    signals.append(
+                        StrategySignal(
+                            signal_type="entry",
+                            direction="long",
+                            strength=round(strength, 4),
+                            price=current_price,
+                            stop_loss=round(stop_loss, 6),
+                            take_profit=round(take_profit, 6),
+                            metadata={
+                                "rsi": round(float(current_rsi), 2),
+                                "rsi_level": "extreme_oversold"
+                                if current_rsi < extreme_oversold
+                                else "oversold",
+                                "strategy": "rsi_mean_reversion",
+                            },
+                        )
+                    )
 
             # Overbought - potential short
             elif current_rsi > overbought and prev_rsi > overbought:
                 if current_rsi > extreme_overbought:
                     strength = 0.9
                 else:
-                    strength = 0.5 + (current_rsi - overbought) / (extreme_overbought - overbought) * 0.4
+                    strength = (
+                        0.5 + (current_rsi - overbought) / (extreme_overbought - overbought) * 0.4
+                    )
 
                 if strength < min_strength:
                     continue
@@ -143,25 +149,29 @@ class RSIMeanReversionStrategy(BaseStrategy):
                     stop_loss = current_price + atr * 1.5
                     take_profit = current_price - atr * 3.0
 
-                    signals.append(StrategySignal(
-                        signal_type="entry",
-                        direction="short",
-                        strength=round(strength, 4),
-                        price=current_price,
-                        stop_loss=round(stop_loss, 6),
-                        take_profit=round(take_profit, 6),
-                        metadata={
-                            "rsi": round(float(current_rsi), 2),
-                            "rsi_level": "extreme_overbought" if current_rsi > extreme_overbought else "overbought",
-                            "strategy": "rsi_mean_reversion",
-                        },
-                    ))
+                    signals.append(
+                        StrategySignal(
+                            signal_type="entry",
+                            direction="short",
+                            strength=round(strength, 4),
+                            price=current_price,
+                            stop_loss=round(stop_loss, 6),
+                            take_profit=round(take_profit, 6),
+                            metadata={
+                                "rsi": round(float(current_rsi), 2),
+                                "rsi_level": "extreme_overbought"
+                                if current_rsi > extreme_overbought
+                                else "overbought",
+                                "strategy": "rsi_mean_reversion",
+                            },
+                        )
+                    )
 
         return signals
 
     def _estimate_atr(self, closes: np.ndarray, idx: int, period: int = 14) -> float:
         start = max(1, idx - period)
-        diffs = np.abs(np.diff(closes[start: idx + 1]))
+        diffs = np.abs(np.diff(closes[start : idx + 1]))
         return float(np.mean(diffs)) if len(diffs) > 0 else closes[idx] * 0.01
 
     def get_rsi(self, candles: list[Candle]) -> list[float]:

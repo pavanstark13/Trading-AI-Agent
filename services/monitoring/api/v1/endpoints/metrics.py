@@ -1,7 +1,5 @@
 """Metrics endpoints for the monitoring service."""
 
-from datetime import datetime, timezone
-
 import structlog
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession

@@ -1,13 +1,14 @@
 """Integration tests for Execution Engine API."""
 
-from unittest.mock import AsyncMock, patch
 import uuid
+from unittest.mock import AsyncMock, patch
 
 import pytest
 import pytest_asyncio
 
 try:
     from services.execution_engine.main import app
+
     APP_AVAILABLE = True
 except Exception:
     APP_AVAILABLE = False
@@ -20,10 +21,8 @@ class TestExecutionEngineAPI:
     @pytest_asyncio.fixture
     async def client(self):
         from httpx import ASGITransport, AsyncClient
-        async with AsyncClient(
-            transport=ASGITransport(app=app),
-            base_url="http://test"
-        ) as client:
+
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             yield client
 
     @pytest.mark.asyncio
@@ -57,15 +56,21 @@ class TestExecutionEngineAPI:
             "updated_at": "2024-01-01T00:00:00Z",
         }
 
-        with patch.object(AlpacaExecutionAdapter, "place_order", new=AsyncMock(return_value=mock_response)):
-            with patch("services.execution_engine.services.order_manager.ensure_adapter", new=AsyncMock()):
-                order_request = {
-                    "ticker": "AAPL",
-                    "order_type": "market",
-                    "side": "buy",
-                    "quantity": 10.0,
-                    "time_in_force": "day",
-                }
-                response = await client.post("/api/v1/orders/place", json=order_request)
-                # May fail if DB not connected
-                assert response.status_code in (201, 422, 500)
+        with (
+            patch.object(
+                AlpacaExecutionAdapter, "place_order", new=AsyncMock(return_value=mock_response)
+            ),
+            patch(
+                "services.execution_engine.services.order_manager.ensure_adapter", new=AsyncMock()
+            ),
+        ):
+            order_request = {
+                "ticker": "AAPL",
+                "order_type": "market",
+                "side": "buy",
+                "quantity": 10.0,
+                "time_in_force": "day",
+            }
+            response = await client.post("/api/v1/orders/place", json=order_request)
+            # May fail if DB not connected
+            assert response.status_code in (201, 422, 500)

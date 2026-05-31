@@ -27,5 +27,9 @@ async def health_check(db: AsyncSession = Depends(get_db)) -> HealthResponse:
     except Exception as e:
         details["redis"] = f"unhealthy: {e}"
     details["anthropic_configured"] = bool(settings.anthropic_api_key)
-    status = "healthy" if all(v == "healthy" for k, v in details.items() if k in ("database", "redis")) else "degraded"
+    status = (
+        "healthy"
+        if all(v == "healthy" for k, v in details.items() if k in ("database", "redis"))
+        else "degraded"
+    )
     return HealthResponse(service="ai-agent", status=status, details=details)

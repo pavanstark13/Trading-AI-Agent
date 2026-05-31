@@ -51,7 +51,9 @@ class TestMarketAnalystAgent:
     @pytest.mark.asyncio
     async def test_run_returns_dict(self):
         """run() should return a dict with agent output."""
-        self.agent._provider.chat_with_tools = AsyncMock(return_value=("Mock analysis complete.", []))
+        self.agent._provider.chat_with_tools = AsyncMock(
+            return_value=("Mock analysis complete.", [])
+        )
 
         context = {"tickers": ["AAPL"], "account_equity": 100000.0}
         result = await self.agent.run(context)

@@ -20,8 +20,12 @@ class Symbol(TimestampMixin, Base):
     asset_type: Mapped[str] = mapped_column(String(50), nullable=False, default="stock")
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
 
-    ohlcv_bars: Mapped[list["OHLCV"]] = relationship("OHLCV", back_populates="symbol", lazy="select")
-    snapshots: Mapped[list["MarketSnapshot"]] = relationship("MarketSnapshot", back_populates="symbol", lazy="select")
+    ohlcv_bars: Mapped[list["OHLCV"]] = relationship(
+        "OHLCV", back_populates="symbol", lazy="select"
+    )
+    snapshots: Mapped[list["MarketSnapshot"]] = relationship(
+        "MarketSnapshot", back_populates="symbol", lazy="select"
+    )
 
 
 class OHLCV(Base):
@@ -29,7 +33,9 @@ class OHLCV(Base):
     __table_args__ = (UniqueConstraint("symbol_id", "timeframe", "timestamp"),)
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    symbol_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("symbols.id", ondelete="CASCADE"), nullable=False)
+    symbol_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("symbols.id", ondelete="CASCADE"), nullable=False
+    )
     timeframe: Mapped[str] = mapped_column(String(10), nullable=False)
     open: Mapped[float] = mapped_column(Numeric(20, 8), nullable=False)
     high: Mapped[float] = mapped_column(Numeric(20, 8), nullable=False)
@@ -46,7 +52,9 @@ class MarketSnapshot(Base):
     __tablename__ = "market_snapshots"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    symbol_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("symbols.id", ondelete="CASCADE"), nullable=False)
+    symbol_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("symbols.id", ondelete="CASCADE"), nullable=False
+    )
     bid: Mapped[float | None] = mapped_column(Numeric(20, 8))
     ask: Mapped[float | None] = mapped_column(Numeric(20, 8))
     last: Mapped[float] = mapped_column(Numeric(20, 8), nullable=False)

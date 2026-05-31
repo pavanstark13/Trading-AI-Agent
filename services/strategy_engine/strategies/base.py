@@ -72,9 +72,7 @@ class BaseStrategy(ABC):
 
     def validate_candles(self, candles: list[Candle]) -> bool:
         """Validate that we have enough candles to run the strategy."""
-        if len(candles) < self._min_bars:
-            return False
-        return True
+        return not len(candles) < self._min_bars
 
     def _to_arrays(self, candles: list[Candle]) -> tuple[np.ndarray, ...]:
         """Convert candle list to numpy arrays."""

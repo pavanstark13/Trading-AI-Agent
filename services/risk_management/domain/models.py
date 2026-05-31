@@ -16,7 +16,9 @@ class RiskProfile(TimestampMixin, Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     description: Mapped[str | None] = mapped_column(Text)
-    max_position_size_pct: Mapped[float] = mapped_column(Numeric(5, 4), nullable=False, default=0.02)
+    max_position_size_pct: Mapped[float] = mapped_column(
+        Numeric(5, 4), nullable=False, default=0.02
+    )
     daily_loss_limit_pct: Mapped[float] = mapped_column(Numeric(5, 4), nullable=False, default=0.05)
     max_drawdown_pct: Mapped[float] = mapped_column(Numeric(5, 4), nullable=False, default=0.15)
     risk_per_trade_pct: Mapped[float] = mapped_column(Numeric(5, 4), nullable=False, default=0.01)

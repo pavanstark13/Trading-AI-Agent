@@ -20,6 +20,6 @@ class MarketDataSettings(Settings):
     historical_cache_ttl: int = 3600  # 1 hour
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> MarketDataSettings:
     return MarketDataSettings()

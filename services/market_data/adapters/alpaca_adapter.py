@@ -1,6 +1,6 @@
 """Alpaca broker adapter for market data."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 
@@ -36,7 +36,10 @@ class AlpacaMarketDataAdapter(BaseBrokerAdapter):
 
     async def connect(self) -> None:
         try:
-            from alpaca.data.historical import CryptoHistoricalDataClient, StockHistoricalDataClient  # noqa: PLC0415
+            from alpaca.data.historical import (  # noqa: PLC0415
+                CryptoHistoricalDataClient,
+                StockHistoricalDataClient,
+            )
 
             self._stock_client = StockHistoricalDataClient(
                 api_key=self._settings.alpaca_api_key,
@@ -67,10 +70,12 @@ class AlpacaMarketDataAdapter(BaseBrokerAdapter):
                 bid=float(q.bid_price) if q.bid_price else None,
                 ask=float(q.ask_price) if q.ask_price else None,
                 last=float(q.ask_price or q.bid_price or 0),
-                timestamp=q.timestamp or datetime.now(timezone.utc),
+                timestamp=q.timestamp or datetime.now(UTC),
             )
         except Exception as e:
-            logger.warning("Failed to get quote from Alpaca, using mock", ticker=ticker, error=str(e))
+            logger.warning(
+                "Failed to get quote from Alpaca, using mock", ticker=ticker, error=str(e)
+            )
             return self._mock_quote(ticker)
 
     async def get_quotes(self, tickers: list[str]) -> list[MarketQuote]:
@@ -127,7 +132,9 @@ class AlpacaMarketDataAdapter(BaseBrokerAdapter):
                 for bar in bars
             ]
         except Exception as e:
-            logger.warning("Failed to get bars from Alpaca, using mock", ticker=ticker, error=str(e))
+            logger.warning(
+                "Failed to get bars from Alpaca, using mock", ticker=ticker, error=str(e)
+            )
             return self._mock_bars(ticker, timeframe, start, end, limit)
 
     def _mock_quote(self, ticker: str) -> MarketQuote:
@@ -143,7 +150,7 @@ class AlpacaMarketDataAdapter(BaseBrokerAdapter):
             change=round(random.uniform(-5, 5), 2),
             change_pct=round(random.uniform(-0.02, 0.02), 4),
             volume=round(random.uniform(100000, 10000000), 0),
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
         )
 
     def _mock_bars(
@@ -161,7 +168,16 @@ class AlpacaMarketDataAdapter(BaseBrokerAdapter):
         bars = []
         current = start
         price = random.uniform(100, 500)
-        tf_minutes = {"1m": 1, "5m": 5, "15m": 15, "30m": 30, "1h": 60, "4h": 240, "1d": 1440, "1w": 10080}
+        tf_minutes = {
+            "1m": 1,
+            "5m": 5,
+            "15m": 15,
+            "30m": 30,
+            "1h": 60,
+            "4h": 240,
+            "1d": 1440,
+            "1w": 10080,
+        }
         minutes = tf_minutes.get(timeframe.value, 60)
 
         for _ in range(min(limit, 100)):
@@ -170,15 +186,17 @@ class AlpacaMarketDataAdapter(BaseBrokerAdapter):
             high = max(price, close) * random.uniform(1.0, 1.005)
             low = min(price, close) * random.uniform(0.995, 1.0)
 
-            bars.append(OHLCVBase(
-                timeframe=timeframe,
-                open=round(price, 4),
-                high=round(high, 4),
-                low=round(low, 4),
-                close=round(close, 4),
-                volume=round(random.uniform(10000, 1000000), 0),
-                timestamp=current,
-            ))
+            bars.append(
+                OHLCVBase(
+                    timeframe=timeframe,
+                    open=round(price, 4),
+                    high=round(high, 4),
+                    low=round(low, 4),
+                    close=round(close, 4),
+                    volume=round(random.uniform(10000, 1000000), 0),
+                    timestamp=current,
+                )
+            )
             price = close
             current += timedelta(minutes=minutes)
             if end and current > end:

@@ -1,6 +1,7 @@
 """Monitoring Service configuration."""
 
 from functools import lru_cache
+
 from shared.config import Settings
 
 
@@ -10,6 +11,6 @@ class MonitoringSettings(Settings):
     alert_cooldown_seconds: int = 300
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> MonitoringSettings:
     return MonitoringSettings()

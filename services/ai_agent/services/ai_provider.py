@@ -44,14 +44,13 @@ def get_ai_provider() -> AIProvider:
 
     if provider == "gemini":
         from services.ai_agent.services.gemini_client import get_gemini_client  # noqa: PLC0415
+
         return get_gemini_client()  # type: ignore[return-value]
 
     elif provider == "claude":
         from services.ai_agent.services.claude_client import get_claude_client  # noqa: PLC0415
+
         return get_claude_client()  # type: ignore[return-value]
 
     else:
-        raise ValueError(
-            f"Unknown AI_PROVIDER='{provider}'. "
-            "Valid options: 'gemini', 'claude'"
-        )
+        raise ValueError(f"Unknown AI_PROVIDER='{provider}'. Valid options: 'gemini', 'claude'")

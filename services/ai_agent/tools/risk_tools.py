@@ -21,8 +21,14 @@ RISK_TOOLS = [
                     "enum": ["fixed_fractional", "kelly", "percent_equity"],
                     "default": "fixed_fractional",
                 },
-                "win_rate": {"type": "number", "description": "Historical win rate (required for Kelly)"},
-                "avg_win_loss_ratio": {"type": "number", "description": "Average win/loss ratio (required for Kelly)"},
+                "win_rate": {
+                    "type": "number",
+                    "description": "Historical win rate (required for Kelly)",
+                },
+                "avg_win_loss_ratio": {
+                    "type": "number",
+                    "description": "Average win/loss ratio (required for Kelly)",
+                },
             },
             "required": ["ticker", "entry_price", "stop_loss", "account_equity"],
         },
@@ -35,9 +41,15 @@ RISK_TOOLS = [
             "properties": {
                 "account_equity": {"type": "number", "description": "Current account equity"},
                 "daily_pnl": {"type": "number", "description": "Today's P&L (negative = loss)"},
-                "current_drawdown_pct": {"type": "number", "description": "Current drawdown from peak"},
+                "current_drawdown_pct": {
+                    "type": "number",
+                    "description": "Current drawdown from peak",
+                },
                 "open_positions": {"type": "integer", "description": "Number of open positions"},
-                "proposed_position_pct": {"type": "number", "description": "Proposed position size as % of equity"},
+                "proposed_position_pct": {
+                    "type": "number",
+                    "description": "Proposed position size as % of equity",
+                },
             },
             "required": ["account_equity"],
         },

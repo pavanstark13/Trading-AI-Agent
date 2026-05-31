@@ -1,7 +1,7 @@
 """Historical data service - fetches, stores and retrieves OHLCV data."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -74,7 +74,7 @@ class HistoricalDataService:
                     "close": b.close,
                     "volume": b.volume,
                     "timestamp": b.timestamp,
-                    "created_at": datetime.now(timezone.utc),
+                    "created_at": datetime.now(UTC),
                 }
                 for b in raw_bars
             ]
@@ -92,7 +92,7 @@ class HistoricalDataService:
                 close=b.close,
                 volume=b.volume,
                 timestamp=b.timestamp,
-                created_at=datetime.now(timezone.utc),
+                created_at=datetime.now(UTC),
             )
             for b in raw_bars
         ]

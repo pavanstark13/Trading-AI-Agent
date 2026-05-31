@@ -1,14 +1,12 @@
 """Test configuration and fixtures."""
 
 import asyncio
-from datetime import datetime, timezone
-from typing import AsyncGenerator
-from unittest.mock import AsyncMock, MagicMock
-import uuid
+from collections.abc import AsyncGenerator
+from datetime import UTC, datetime
+from unittest.mock import AsyncMock
 
 import pytest
 import pytest_asyncio
-from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 # Use SQLite for tests
@@ -61,18 +59,21 @@ def sample_candles():
     price = 100.0
     for i in range(100):
         import random
+
         change = random.uniform(-0.02, 0.02)
         close = price * (1 + change)
         high = max(price, close) * random.uniform(1.001, 1.005)
         low = min(price, close) * random.uniform(0.995, 0.999)
-        candles.append(Candle(
-            timestamp=datetime(2024, 1, 1, i // 24, i % 24, tzinfo=timezone.utc),
-            open=round(price, 4),
-            high=round(high, 4),
-            low=round(low, 4),
-            close=round(close, 4),
-            volume=round(random.uniform(10000, 500000), 0),
-        ))
+        candles.append(
+            Candle(
+                timestamp=datetime(2024, 1, 1, i // 24, i % 24, tzinfo=UTC),
+                open=round(price, 4),
+                high=round(high, 4),
+                low=round(low, 4),
+                close=round(close, 4),
+                volume=round(random.uniform(10000, 500000), 0),
+            )
+        )
         price = close
     return candles
 
@@ -85,20 +86,22 @@ def sample_ohlcv_data():
 
     data = []
     price = 100.0
-    now = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    now = datetime(2024, 1, 1, tzinfo=UTC)
     for i in range(200):
         change = random.uniform(-0.02, 0.02)
         close = price * (1 + change)
         high = max(price, close) * random.uniform(1.001, 1.005)
         low = min(price, close) * random.uniform(0.995, 0.999)
-        data.append({
-            "timestamp": now + timedelta(hours=i),
-            "open": round(price, 4),
-            "high": round(high, 4),
-            "low": round(low, 4),
-            "close": round(close, 4),
-            "volume": round(random.uniform(10000, 500000), 0),
-        })
+        data.append(
+            {
+                "timestamp": now + timedelta(hours=i),
+                "open": round(price, 4),
+                "high": round(high, 4),
+                "low": round(low, 4),
+                "close": round(close, 4),
+                "volume": round(random.uniform(10000, 500000), 0),
+            }
+        )
         price = close
     return data
 

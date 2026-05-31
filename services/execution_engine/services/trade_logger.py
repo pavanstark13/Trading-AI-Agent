@@ -1,6 +1,6 @@
 """Trade logging service - records executed trades to database."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,8 +36,8 @@ class TradeLogger:
             pnl=pnl,
             pnl_pct=None,
             is_closing=order.side == "sell",
-            executed_at=datetime.now(timezone.utc),
-            created_at=datetime.now(timezone.utc),
+            executed_at=datetime.now(UTC),
+            created_at=datetime.now(UTC),
         )
         self.session.add(trade)
         await self.session.flush()

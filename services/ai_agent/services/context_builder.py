@@ -1,6 +1,6 @@
 """Context builder - assembles market and portfolio context for AI agents."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
@@ -25,7 +25,7 @@ class ContextBuilder:
         """Fetch market data context for given tickers."""
         context: dict[str, Any] = {
             "tickers": tickers,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "quotes": {},
             "historical_summary": {},
         }
@@ -46,9 +46,7 @@ class ContextBuilder:
     async def build_portfolio_context(self) -> dict[str, Any]:
         """Fetch current portfolio state."""
         try:
-            resp = await self._http.get(
-                f"{settings.execution_engine_url}/api/v1/orders/positions"
-            )
+            resp = await self._http.get(f"{settings.execution_engine_url}/api/v1/orders/positions")
             positions = resp.json() if resp.status_code == 200 else []
         except Exception as e:
             logger.warning("Failed to fetch positions", error=str(e))
@@ -57,7 +55,7 @@ class ContextBuilder:
         return {
             "positions": positions,
             "open_positions_count": len(positions),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
     async def build_risk_context(self, account_equity: float) -> dict[str, Any]:
@@ -83,7 +81,7 @@ class ContextBuilder:
             "account_equity": account_equity,
             "drawdown_status": drawdown,
             "circuit_breaker": circuit_breaker,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
     async def build_signals_context(self, tickers: list[str]) -> dict[str, Any]:
@@ -103,7 +101,7 @@ class ContextBuilder:
 
         return {
             "signals": signals,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
     async def build_full_context(
@@ -122,7 +120,7 @@ class ContextBuilder:
             "portfolio": portfolio,
             "risk": risk,
             "signals": signals,
-            "built_at": datetime.now(timezone.utc).isoformat(),
+            "built_at": datetime.now(UTC).isoformat(),
         }
 
     async def close(self) -> None:

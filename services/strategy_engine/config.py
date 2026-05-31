@@ -12,6 +12,6 @@ class StrategyEngineSettings(Settings):
     min_bars_required: int = 50
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> StrategyEngineSettings:
     return StrategyEngineSettings()

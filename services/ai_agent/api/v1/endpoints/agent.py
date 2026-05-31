@@ -3,7 +3,7 @@
 from typing import Any
 
 import structlog
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from services.ai_agent.agents.orchestrator import OrchestratorAgent
 from shared.schemas.base import BaseSchema

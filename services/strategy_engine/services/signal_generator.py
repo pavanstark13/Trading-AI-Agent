@@ -1,14 +1,14 @@
 """Signal generation service - coordinates strategies to produce trade signals."""
 
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.strategy_engine.domain.schemas import SignalCreate, SignalResponse
 from services.strategy_engine.strategies.base import Candle, StrategySignal
-from services.strategy_engine.strategies.rule_based.moving_average import MovingAverageCrossoverStrategy
+from services.strategy_engine.strategies.rule_based.moving_average import (
+    MovingAverageCrossoverStrategy,
+)
 from services.strategy_engine.strategies.rule_based.rsi import RSIMeanReversionStrategy
 from services.strategy_engine.strategies.smc.fair_value_gaps import FairValueGapStrategy
 from services.strategy_engine.strategies.smc.market_structure import MarketStructureStrategy
@@ -36,7 +36,7 @@ class SignalGeneratorService:
         """Convert OHLCV dicts to Candle objects."""
         return [
             Candle(
-                timestamp=bar.get("timestamp", datetime.now(timezone.utc)),
+                timestamp=bar.get("timestamp", datetime.now(UTC)),
                 open=float(bar["open"]),
                 high=float(bar["high"]),
                 low=float(bar["low"]),
@@ -107,7 +107,9 @@ class SignalGeneratorService:
             best = max(long_signals, key=lambda s: s.strength)
             best.strength = round(avg_strength, 4)
             best.metadata["confluence_count"] = len(long_signals)
-            best.metadata["strategies"] = [s.metadata.get("strategy", "unknown") for s in long_signals]
+            best.metadata["strategies"] = [
+                s.metadata.get("strategy", "unknown") for s in long_signals
+            ]
             aggregated.append(best)
 
         if short_signals:
@@ -118,7 +120,9 @@ class SignalGeneratorService:
             best = max(short_signals, key=lambda s: s.strength)
             best.strength = round(avg_strength, 4)
             best.metadata["confluence_count"] = len(short_signals)
-            best.metadata["strategies"] = [s.metadata.get("strategy", "unknown") for s in short_signals]
+            best.metadata["strategies"] = [
+                s.metadata.get("strategy", "unknown") for s in short_signals
+            ]
             aggregated.append(best)
 
         return aggregated

@@ -1,8 +1,5 @@
 """Order management service."""
 
-import uuid
-from datetime import datetime, timezone
-
 import structlog
 from sqlalchemy.ext.asyncio import AsyncSession
 

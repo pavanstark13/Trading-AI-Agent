@@ -1,6 +1,5 @@
 """Market Analyst Agent - analyzes market conditions and trends."""
 
-import json
 from typing import Any
 
 import structlog
@@ -86,7 +85,7 @@ Always prioritize capital preservation over aggressive trading."""
     async def run(self, context: dict[str, Any]) -> dict[str, Any]:
         """Analyze market and return structured assessment."""
         tickers = context.get("tickers", ["SPY", "QQQ"])
-        user_message = f"""Please analyze the current market conditions for the following tickers: {', '.join(tickers)}
+        user_message = f"""Please analyze the current market conditions for the following tickers: {", ".join(tickers)}
 
 Market data and signals are available via the tools provided.
 

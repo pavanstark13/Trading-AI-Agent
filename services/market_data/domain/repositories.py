@@ -35,7 +35,9 @@ class SymbolRepository:
         result = await self.session.execute(select(Symbol).where(Symbol.is_active == True))  # noqa: E712
         return list(result.scalars().all())
 
-    async def create(self, ticker: str, name: str, exchange: str, asset_type: str = "stock") -> Symbol:
+    async def create(
+        self, ticker: str, name: str, exchange: str, asset_type: str = "stock"
+    ) -> Symbol:
         symbol = Symbol(ticker=ticker.upper(), name=name, exchange=exchange, asset_type=asset_type)
         self.session.add(symbol)
         await self.session.flush()
@@ -69,12 +71,7 @@ class OHLCVRepository:
         if end:
             conditions.append(OHLCV.timestamp <= end)
 
-        query = (
-            select(OHLCV)
-            .where(and_(*conditions))
-            .order_by(desc(OHLCV.timestamp))
-            .limit(limit)
-        )
+        query = select(OHLCV).where(and_(*conditions)).order_by(desc(OHLCV.timestamp)).limit(limit)
         result = await self.session.execute(query)
         bars = list(result.scalars().all())
         return bars[::-1]  # Return in chronological order

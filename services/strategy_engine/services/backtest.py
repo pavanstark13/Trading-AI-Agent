@@ -5,9 +5,8 @@ from datetime import datetime
 import numpy as np
 import structlog
 
-from services.strategy_engine.domain.schemas import BacktestResult
+from services.strategy_engine.services.signal_generator import STRATEGY_REGISTRY
 from services.strategy_engine.strategies.base import Candle, StrategySignal
-from services.strategy_engine.services.signal_generator import STRATEGY_REGISTRY, SignalGeneratorService
 
 logger = structlog.get_logger(__name__)
 
@@ -74,23 +73,51 @@ class BacktestEngine:
                     if current_candle.low <= position["stop_loss"]:
                         pnl = (position["stop_loss"] - position["entry_price"]) * position["qty"]
                         capital += pnl - abs(pnl * self.commission)
-                        trades.append({**position, "exit_price": position["stop_loss"], "pnl": pnl, "exit_reason": "stop_loss"})
+                        trades.append(
+                            {
+                                **position,
+                                "exit_price": position["stop_loss"],
+                                "pnl": pnl,
+                                "exit_reason": "stop_loss",
+                            }
+                        )
                         position = None
                     elif current_candle.high >= position["take_profit"]:
                         pnl = (position["take_profit"] - position["entry_price"]) * position["qty"]
                         capital += pnl - abs(pnl * self.commission)
-                        trades.append({**position, "exit_price": position["take_profit"], "pnl": pnl, "exit_reason": "take_profit"})
+                        trades.append(
+                            {
+                                **position,
+                                "exit_price": position["take_profit"],
+                                "pnl": pnl,
+                                "exit_reason": "take_profit",
+                            }
+                        )
                         position = None
                 elif position["direction"] == "short":
                     if current_candle.high >= position["stop_loss"]:
                         pnl = (position["entry_price"] - position["stop_loss"]) * position["qty"]
                         capital += pnl - abs(pnl * self.commission)
-                        trades.append({**position, "exit_price": position["stop_loss"], "pnl": pnl, "exit_reason": "stop_loss"})
+                        trades.append(
+                            {
+                                **position,
+                                "exit_price": position["stop_loss"],
+                                "pnl": pnl,
+                                "exit_reason": "stop_loss",
+                            }
+                        )
                         position = None
                     elif current_candle.low <= position["take_profit"]:
                         pnl = (position["entry_price"] - position["take_profit"]) * position["qty"]
                         capital += pnl - abs(pnl * self.commission)
-                        trades.append({**position, "exit_price": position["take_profit"], "pnl": pnl, "exit_reason": "take_profit"})
+                        trades.append(
+                            {
+                                **position,
+                                "exit_price": position["take_profit"],
+                                "pnl": pnl,
+                                "exit_reason": "take_profit",
+                            }
+                        )
                         position = None
 
             # Generate signals from strategies
@@ -105,7 +132,11 @@ class BacktestEngine:
 
                 if all_signals:
                     best_signal = max(all_signals, key=lambda s: s.strength)
-                    if best_signal.strength >= 0.6 and best_signal.stop_loss and best_signal.take_profit:
+                    if (
+                        best_signal.strength >= 0.6
+                        and best_signal.stop_loss
+                        and best_signal.take_profit
+                    ):
                         entry_price = current_candle.open
                         risk_pct = 0.01  # 1% risk per trade
                         risk_amount = capital * risk_pct

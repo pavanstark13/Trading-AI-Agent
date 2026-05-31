@@ -2,20 +2,20 @@
 
 import uuid
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import Field
 
 from shared.schemas.base import BaseSchema
 
 
-class RiskSeverity(str, Enum):
+class RiskSeverity(StrEnum):
     INFO = "info"
     WARNING = "warning"
     CRITICAL = "critical"
 
 
-class PositionSizeMethod(str, Enum):
+class PositionSizeMethod(StrEnum):
     FIXED_FRACTIONAL = "fixed_fractional"
     KELLY = "kelly"
     FIXED_UNITS = "fixed_units"

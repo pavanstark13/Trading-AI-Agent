@@ -66,6 +66,7 @@ Your decisions must protect the trading account above all else. When in doubt, r
     async def execute_tool(self, tool_name: str, tool_input: dict[str, Any]) -> Any:
         """Execute risk management tools."""
         import httpx  # noqa: PLC0415
+
         from services.ai_agent.config import get_settings  # noqa: PLC0415
 
         s = get_settings()
@@ -86,9 +87,7 @@ Your decisions must protect the trading account above all else. When in doubt, r
 
             elif tool_name == "get_drawdown_status":
                 equity = tool_input.get("account_equity", 100000)
-                resp = await client.get(
-                    f"{s.risk_management_url}/api/v1/risk/drawdown/{equity}"
-                )
+                resp = await client.get(f"{s.risk_management_url}/api/v1/risk/drawdown/{equity}")
                 return resp.json() if resp.status_code == 200 else {"error": resp.text}
 
             return {"error": f"Unknown tool: {tool_name}"}
@@ -102,7 +101,7 @@ Your decisions must protect the trading account above all else. When in doubt, r
         user_message = f"""Evaluate the following trading context for risk management:
 
 Account Equity: ${account_equity:,.2f}
-Open Positions: {portfolio.get('open_positions_count', 0)}
+Open Positions: {portfolio.get("open_positions_count", 0)}
 
 Proposed Trades:
 {proposed_trades}

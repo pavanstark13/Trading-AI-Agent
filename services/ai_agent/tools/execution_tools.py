@@ -19,7 +19,10 @@ EXECUTION_TOOLS = [
                     "description": "Order direction",
                 },
                 "quantity": {"type": "number", "description": "Number of units/shares to trade"},
-                "price": {"type": "number", "description": "Limit price (required for limit orders)"},
+                "price": {
+                    "type": "number",
+                    "description": "Limit price (required for limit orders)",
+                },
                 "stop_price": {"type": "number", "description": "Stop price (for stop orders)"},
                 "time_in_force": {
                     "type": "string",
@@ -36,7 +39,10 @@ EXECUTION_TOOLS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "external_order_id": {"type": "string", "description": "The broker's order ID to cancel"},
+                "external_order_id": {
+                    "type": "string",
+                    "description": "The broker's order ID to cancel",
+                },
             },
             "required": ["external_order_id"],
         },

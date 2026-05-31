@@ -1,7 +1,7 @@
 """Alpaca broker execution adapter."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import structlog
 
@@ -45,8 +45,11 @@ class AlpacaExecutionAdapter(BaseExecutionAdapter):
             return self._simulate_fill(request)
 
         try:
-            from alpaca.trading.enums import OrderSide, OrderType, TimeInForce  # noqa: PLC0415
-            from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest, StopOrderRequest  # noqa: PLC0415
+            from alpaca.trading.enums import OrderSide, TimeInForce  # noqa: PLC0415
+            from alpaca.trading.requests import (  # noqa: PLC0415
+                LimitOrderRequest,
+                MarketOrderRequest,
+            )
 
             side = OrderSide.BUY if request.side.value == "buy" else OrderSide.SELL
             tif = TimeInForce.DAY
@@ -67,7 +70,9 @@ class AlpacaExecutionAdapter(BaseExecutionAdapter):
                     limit_price=request.price,
                 )
             else:
-                order_req = MarketOrderRequest(symbol=request.ticker, qty=request.quantity, side=side, time_in_force=tif)
+                order_req = MarketOrderRequest(
+                    symbol=request.ticker, qty=request.quantity, side=side, time_in_force=tif
+                )
 
             order = self._client.submit_order(order_req)
             return OrderResponse(
@@ -84,8 +89,8 @@ class AlpacaExecutionAdapter(BaseExecutionAdapter):
                 filled_qty=0.0,
                 avg_fill_price=None,
                 rejection_reason=None,
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc),
+                created_at=datetime.now(UTC),
+                updated_at=datetime.now(UTC),
             )
         except Exception as e:
             logger.error("Alpaca order placement failed", error=str(e))
@@ -119,8 +124,8 @@ class AlpacaExecutionAdapter(BaseExecutionAdapter):
             filled_qty=float(order.filled_qty or 0),
             avg_fill_price=float(order.filled_avg_price) if order.filled_avg_price else None,
             rejection_reason=None,
-            created_at=order.created_at or datetime.now(timezone.utc),
-            updated_at=order.updated_at or datetime.now(timezone.utc),
+            created_at=order.created_at or datetime.now(UTC),
+            updated_at=order.updated_at or datetime.now(UTC),
         )
 
     def _simulate_fill(self, request: PlaceOrderRequest) -> OrderResponse:
@@ -142,6 +147,6 @@ class AlpacaExecutionAdapter(BaseExecutionAdapter):
             filled_qty=request.quantity,
             avg_fill_price=fill_price,
             rejection_reason=None,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )

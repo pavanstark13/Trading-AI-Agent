@@ -1,7 +1,5 @@
 """Position sizing calculations using various methods."""
 
-import math
-
 import structlog
 
 from services.risk_management.domain.schemas import (
@@ -107,7 +105,9 @@ class PositionSizer:
         avg_win_loss_ratio = request.avg_win_loss_ratio
 
         if win_rate is None or avg_win_loss_ratio is None:
-            logger.warning("Kelly requires win_rate and avg_win_loss_ratio, falling back to fixed_fractional")
+            logger.warning(
+                "Kelly requires win_rate and avg_win_loss_ratio, falling back to fixed_fractional"
+            )
             return self._fixed_fractional(request, risk_per_unit)
 
         # Full Kelly formula
@@ -118,7 +118,9 @@ class PositionSizer:
 
         # Apply fractional Kelly to reduce risk
         adjusted_fraction = full_kelly_fraction * request.kelly_fraction
-        adjusted_fraction = min(adjusted_fraction, request.risk_per_trade_pct * 3)  # Cap at 3x base risk
+        adjusted_fraction = min(
+            adjusted_fraction, request.risk_per_trade_pct * 3
+        )  # Cap at 3x base risk
 
         risk_amount = request.account_equity * adjusted_fraction
         quantity = risk_amount / risk_per_unit

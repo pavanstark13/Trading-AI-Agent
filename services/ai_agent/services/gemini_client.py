@@ -3,8 +3,8 @@
 import json
 from typing import Any
 
-import structlog
 import google.generativeai as genai
+import structlog
 from google.generativeai.types import GenerateContentResponse
 
 from services.ai_agent.config import get_settings
@@ -100,7 +100,9 @@ class GeminiClient:
 
         logger.debug(
             "Gemini response received",
-            finish_reason=str(response.candidates[0].finish_reason) if response.candidates else "unknown",
+            finish_reason=str(response.candidates[0].finish_reason)
+            if response.candidates
+            else "unknown",
         )
         return response
 
@@ -122,11 +124,13 @@ class GeminiClient:
         for part in response.candidates[0].content.parts:
             if part.function_call:
                 fc = part.function_call
-                tool_calls.append({
-                    "id": fc.name,
-                    "name": fc.name,
-                    "input": dict(fc.args),
-                })
+                tool_calls.append(
+                    {
+                        "id": fc.name,
+                        "name": fc.name,
+                        "input": dict(fc.args),
+                    }
+                )
         return tool_calls
 
     async def chat_with_tools(
@@ -164,7 +168,9 @@ class GeminiClient:
                 logger.info("Executing tool", name=tc["name"])
                 try:
                     result = await tool_executor(tc["name"], tc["input"])
-                    result_str = json.dumps(result, default=str) if isinstance(result, dict) else str(result)
+                    result_str = (
+                        json.dumps(result, default=str) if isinstance(result, dict) else str(result)
+                    )
                     tool_results.append(
                         genai.protos.Part(
                             function_response=genai.protos.FunctionResponse(
@@ -173,7 +179,9 @@ class GeminiClient:
                             )
                         )
                     )
-                    tool_history.append({"tool": tc["name"], "input": tc["input"], "result": result})
+                    tool_history.append(
+                        {"tool": tc["name"], "input": tc["input"], "result": result}
+                    )
                 except Exception as e:
                     logger.error("Tool execution failed", tool=tc["name"], error=str(e))
                     tool_results.append(

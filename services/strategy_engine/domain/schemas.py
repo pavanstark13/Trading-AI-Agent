@@ -2,7 +2,7 @@
 
 import uuid
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import Field
@@ -10,21 +10,21 @@ from pydantic import Field
 from shared.schemas.base import BaseSchema
 
 
-class StrategyType(str, Enum):
+class StrategyType(StrEnum):
     SMC = "smc"
     RULE_BASED = "rule_based"
     ML = "ml"
     HYBRID = "hybrid"
 
 
-class SignalType(str, Enum):
+class SignalType(StrEnum):
     ENTRY = "entry"
     EXIT = "exit"
     SCALE_IN = "scale_in"
     SCALE_OUT = "scale_out"
 
 
-class Direction(str, Enum):
+class Direction(StrEnum):
     LONG = "long"
     SHORT = "short"
 

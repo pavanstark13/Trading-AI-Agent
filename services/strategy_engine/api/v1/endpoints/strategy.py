@@ -1,7 +1,6 @@
 """Strategy Engine API endpoints."""
 
-import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 import structlog
 from fastapi import APIRouter, Depends, HTTPException
@@ -11,12 +10,12 @@ from services.strategy_engine.domain.schemas import (
     BacktestRequest,
     BacktestResult,
     GenerateSignalRequest,
-    SignalResponse,
-    StrategyCreate,
-    StrategyResponse,
 )
 from services.strategy_engine.services.backtest import BacktestEngine
-from services.strategy_engine.services.signal_generator import STRATEGY_REGISTRY, SignalGeneratorService
+from services.strategy_engine.services.signal_generator import (
+    STRATEGY_REGISTRY,
+    SignalGeneratorService,
+)
 from shared.database import get_db
 
 router = APIRouter()
@@ -37,25 +36,27 @@ async def generate_signals(
     """Generate trading signals for a ticker using configured strategies."""
     # In production, this would fetch candles from market-data service
     # For now we return a demonstration with mock data
-    from datetime import timedelta, timezone  # noqa: PLC0415
     import random  # noqa: PLC0415
+    from datetime import timedelta  # noqa: PLC0415
 
     mock_candles = []
     price = 100.0
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     for i in range(100):
         change = random.uniform(-0.02, 0.02)
         close = price * (1 + change)
         high = max(price, close) * random.uniform(1.001, 1.005)
         low = min(price, close) * random.uniform(0.995, 0.999)
-        mock_candles.append({
-            "timestamp": now - timedelta(hours=100 - i),
-            "open": round(price, 4),
-            "high": round(high, 4),
-            "low": round(low, 4),
-            "close": round(close, 4),
-            "volume": round(random.uniform(10000, 500000), 0),
-        })
+        mock_candles.append(
+            {
+                "timestamp": now - timedelta(hours=100 - i),
+                "open": round(price, 4),
+                "high": round(high, 4),
+                "low": round(low, 4),
+                "close": round(close, 4),
+                "volume": round(random.uniform(10000, 500000), 0),
+            }
+        )
         price = close
 
     service = SignalGeneratorService(db)
@@ -83,7 +84,7 @@ async def run_backtest(
 ) -> BacktestResult:
     """Run a backtest for a strategy on historical data."""
     import random  # noqa: PLC0415
-    from datetime import timedelta, timezone  # noqa: PLC0415
+    from datetime import timedelta  # noqa: PLC0415
 
     # Mock OHLCV data for demonstration
     mock_candles = []
@@ -94,14 +95,16 @@ async def run_backtest(
         close = price * (1 + change)
         high = max(price, close) * random.uniform(1.001, 1.005)
         low = min(price, close) * random.uniform(0.995, 0.999)
-        mock_candles.append({
-            "timestamp": current,
-            "open": round(price, 4),
-            "high": round(high, 4),
-            "low": round(low, 4),
-            "close": round(close, 4),
-            "volume": round(random.uniform(50000, 2000000), 0),
-        })
+        mock_candles.append(
+            {
+                "timestamp": current,
+                "open": round(price, 4),
+                "high": round(high, 4),
+                "low": round(low, 4),
+                "close": round(close, 4),
+                "volume": round(random.uniform(50000, 2000000), 0),
+            }
+        )
         price = close
         current += timedelta(hours=1)
 

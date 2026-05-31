@@ -219,21 +219,23 @@ class OrderBlockStrategy(BaseStrategy):
                     risk = current_price - stop_loss
                     take_profit = current_price + risk * 2.0  # 2:1 RR
 
-                    signals.append(StrategySignal(
-                        signal_type="entry",
-                        direction="long",
-                        strength=ob.strength,
-                        price=current_price,
-                        stop_loss=round(stop_loss, 6),
-                        take_profit=round(take_profit, 6),
-                        metadata={
-                            "ob_top": ob.top,
-                            "ob_bottom": ob.bottom,
-                            "ob_timestamp": ob.timestamp.isoformat(),
-                            "ob_direction": "bullish",
-                            "strategy": "order_block",
-                        },
-                    ))
+                    signals.append(
+                        StrategySignal(
+                            signal_type="entry",
+                            direction="long",
+                            strength=ob.strength,
+                            price=current_price,
+                            stop_loss=round(stop_loss, 6),
+                            take_profit=round(take_profit, 6),
+                            metadata={
+                                "ob_top": ob.top,
+                                "ob_bottom": ob.bottom,
+                                "ob_timestamp": ob.timestamp.isoformat(),
+                                "ob_direction": "bullish",
+                                "strategy": "order_block",
+                            },
+                        )
+                    )
 
             elif ob.direction == "bearish":
                 # Price returning to bearish OB (resistance)
@@ -242,21 +244,23 @@ class OrderBlockStrategy(BaseStrategy):
                     risk = stop_loss - current_price
                     take_profit = current_price - risk * 2.0  # 2:1 RR
 
-                    signals.append(StrategySignal(
-                        signal_type="entry",
-                        direction="short",
-                        strength=ob.strength,
-                        price=current_price,
-                        stop_loss=round(stop_loss, 6),
-                        take_profit=round(take_profit, 6),
-                        metadata={
-                            "ob_top": ob.top,
-                            "ob_bottom": ob.bottom,
-                            "ob_timestamp": ob.timestamp.isoformat(),
-                            "ob_direction": "bearish",
-                            "strategy": "order_block",
-                        },
-                    ))
+                    signals.append(
+                        StrategySignal(
+                            signal_type="entry",
+                            direction="short",
+                            strength=ob.strength,
+                            price=current_price,
+                            stop_loss=round(stop_loss, 6),
+                            take_profit=round(take_profit, 6),
+                            metadata={
+                                "ob_top": ob.top,
+                                "ob_bottom": ob.bottom,
+                                "ob_timestamp": ob.timestamp.isoformat(),
+                                "ob_direction": "bearish",
+                                "strategy": "order_block",
+                            },
+                        )
+                    )
 
         return signals
 

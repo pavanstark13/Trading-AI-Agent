@@ -1,16 +1,16 @@
 """Unit tests for SMC Order Block strategy."""
 
-from datetime import datetime, timezone
-
-import pytest
+from datetime import UTC, datetime
 
 from services.strategy_engine.strategies.base import Candle
 from services.strategy_engine.strategies.smc.order_blocks import OrderBlockStrategy
 
 
-def make_candle(idx: int, open: float, high: float, low: float, close: float, volume: float = 100000.0) -> Candle:
+def make_candle(
+    idx: int, open: float, high: float, low: float, close: float, volume: float = 100000.0
+) -> Candle:
     return Candle(
-        timestamp=datetime(2024, 1, 1, idx, 0, tzinfo=timezone.utc),
+        timestamp=datetime(2024, 1, 1, idx, 0, tzinfo=UTC),
         open=open,
         high=high,
         low=low,
@@ -19,16 +19,16 @@ def make_candle(idx: int, open: float, high: float, low: float, close: float, vo
     )
 
 
-def make_trending_candles(n: int = 100, start_price: float = 100.0, trend: str = "up") -> list[Candle]:
+def make_trending_candles(
+    n: int = 100, start_price: float = 100.0, trend: str = "up"
+) -> list[Candle]:
     """Generate trending candles with some noise."""
     import random
+
     candles = []
     price = start_price
     for i in range(n):
-        if trend == "up":
-            change = random.uniform(0.0, 0.03)
-        else:
-            change = random.uniform(-0.03, 0.0)
+        change = random.uniform(0.0, 0.03) if trend == "up" else random.uniform(-0.03, 0.0)
         change += random.uniform(-0.01, 0.01)  # noise
         close = price * (1 + change)
         high = max(price, close) * 1.003
@@ -42,12 +42,14 @@ class TestOrderBlockStrategy:
     """Tests for Order Block detection strategy."""
 
     def setup_method(self):
-        self.strategy = OrderBlockStrategy(parameters={
-            "lookback": 10,
-            "displacement_multiplier": 1.2,
-            "min_strength": 0.5,
-            "atr_period": 10,
-        })
+        self.strategy = OrderBlockStrategy(
+            parameters={
+                "lookback": 10,
+                "displacement_multiplier": 1.2,
+                "min_strength": 0.5,
+                "atr_period": 10,
+            }
+        )
 
     def test_init(self):
         """Strategy should initialize with correct defaults."""
@@ -109,7 +111,7 @@ class TestOrderBlockStrategy:
         """Downtrend should eventually produce bearish order blocks."""
         candles = make_trending_candles(100, trend="down")
         obs = self.strategy.get_all_order_blocks(candles)
-        directions = {ob.direction for ob in obs}
+        {ob.direction for ob in obs}
         # In a downtrend, we expect mostly bearish OBs
         assert len(obs) >= 0  # May or may not have OBs depending on random data
 

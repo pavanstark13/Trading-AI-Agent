@@ -1,6 +1,6 @@
 """Pydantic base response schemas."""
 
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 from pydantic import BaseModel, ConfigDict
 
@@ -13,7 +13,7 @@ class BaseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
-class SuccessResponse(BaseSchema, Generic[T]):
+class SuccessResponse[T](BaseSchema):
     """Generic success response wrapper."""
 
     success: bool = True
@@ -37,7 +37,7 @@ class ErrorResponse(BaseSchema):
     request_id: str | None = None
 
 
-class PaginatedResponse(BaseSchema, Generic[T]):
+class PaginatedResponse[T](BaseSchema):
     """Paginated response wrapper."""
 
     success: bool = True

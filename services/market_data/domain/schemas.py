@@ -2,14 +2,14 @@
 
 import uuid
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import Field
 
 from shared.schemas.base import BaseSchema
 
 
-class AssetType(str, Enum):
+class AssetType(StrEnum):
     STOCK = "stock"
     ETF = "etf"
     CRYPTO = "crypto"
@@ -17,7 +17,7 @@ class AssetType(str, Enum):
     FUTURES = "futures"
 
 
-class Timeframe(str, Enum):
+class Timeframe(StrEnum):
     M1 = "1m"
     M5 = "5m"
     M15 = "15m"
