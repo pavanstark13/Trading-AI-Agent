@@ -2454,9 +2454,20 @@
     let db = null;
     const CLOUD_KEYS = ['invoices','invoice_customers','invoice_payments','invoice_gatepasses','invoice_seq','company_settings'];
 
+    // Default config — overridable via Data Center UI
+    const DEFAULT_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAd0FzunhKRf_Mv65awqB86DAeaTif6_oE",
+      authDomain: "niyakrish-invoice.firebaseapp.com",
+      projectId: "niyakrish-invoice",
+      storageBucket: "niyakrish-invoice.firebasestorage.app",
+      messagingSenderId: "1007805250679",
+      appId: "1:1007805250679:web:f0ea00778ab3da8871da72"
+    };
+
     function initFirebase(){
-      const cfg = localStorage.getItem('firebase_config');
-      if(!cfg){ updateCloudStatus('offline'); return; }
+      const stored = localStorage.getItem('firebase_config');
+      const cfg = stored ? stored : JSON.stringify(DEFAULT_FIREBASE_CONFIG);
+      if(!stored) localStorage.setItem('firebase_config', cfg);
       try{
         const config = JSON.parse(cfg);
         if(!firebase.apps.length) firebase.initializeApp(config);
