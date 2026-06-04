@@ -1092,6 +1092,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124l-.847-13.56a1.875 1.875 0 00-1.867-1.756H5.353a1.875 1.875 0 00-1.867 1.756l-.847 13.56c-.039.62.469 1.124 1.09 1.124H3m14.25-4.5H12M3 10.5h18" /></svg>
         Outward Gate Pass
       </button>
+      <button class="menu-item" onclick="switchView('gphistory')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        GP History
+      </button>
 
       <div class="sidebar-section-label">ACCOUNTS</div>
 
@@ -1113,6 +1117,10 @@
       <button class="menu-item" onclick="switchView('datacenter')">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694 4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V10.5m16.5 0v3.75m-16.5-3.75v3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125v-3.75" /></svg>
         Data Center
+      </button>
+      <button class="menu-item" onclick="switchView('settings')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Company Settings
       </button>
     </div>
     <div class="sidebar-footer">
@@ -1168,6 +1176,15 @@
           <div class="stat-info">
             <h3>Gate Passes Issued</h3>
             <p id="stat-gatepasses">0</p>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-overdue-card" style="cursor:pointer;" onclick="switchView('history')">
+          <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Overdue Invoices</h3>
+            <p id="stat-overdue" style="color:#ef4444;">0</p>
           </div>
         </div>
       </div>
@@ -1243,6 +1260,8 @@
           <button class="btn secondary" onclick="switchView('history')">📋 All Invoices</button>
           <button class="btn secondary" onclick="newInvoice()">+ New Invoice</button>
           <button class="btn accent" style="background:#10b981;" onclick="generateGatePassFromInvoice()">🚛 Gen. Gate Pass</button>
+          <button class="btn" style="background:#10b981;" onclick="markInvoiceAsPaid()">✅ Mark Paid</button>
+          <button class="btn" style="background:#25D366;" onclick="shareWhatsApp()">📲 WhatsApp</button>
         </div>
       </div>
 
@@ -1302,6 +1321,12 @@
                 <input id="poNumber" type="text"/>
               </div>
             </div>
+            <div class="field-row">
+              <div style="flex:1">
+                <label>Payment Due Date</label>
+                <input id="dueDate" type="date"/>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -1309,15 +1334,16 @@
         <div class="field-row">
           <div class="left-box box">
             <label>Customer Name</label>
-            <input id="custName" type="text"/>
+            <input id="custName" type="text" list="customer-names-list" autocomplete="off" placeholder="Start typing to search saved customers…"/>
+            <datalist id="customer-names-list"></datalist>
             <div class="field-row">
               <div style="width:220px">
                 <label>Customer Phone</label>
                 <input id="custPhone" type="text"/>
               </div>
               <div style="width:150px">
-                <label>GSTIN</label>
-                <input id="custGSTIN" type="text" style="width:100%"/>
+                <label>GSTIN &nbsp;<span id="gstin-badge" style="font-size:9px;font-weight:700;"></span></label>
+                <input id="custGSTIN" type="text" style="width:100%" oninput="validateGSTIN(this)" placeholder="29AAKCN0823D1ZM"/>
               </div>
             </div>
             <label style="margin-top:6px;">Customer Address</label>
@@ -1358,11 +1384,12 @@
             <tr>
               <th class="no-print" style="width:48px;text-align:center">Select</th>
               <th>Grade / Product Type</th>
-              <th style="width:120px;">Qty/CBM/Pc</th>
-              <th style="width:120px;">Rate</th>
-              <th style="width:120px;">Gross Amount</th>
-              <th style="width:90px;">CGST %</th>
-              <th style="width:90px;">SGST %</th>
+              <th style="width:100px;">Qty/CBM/Pc</th>
+              <th style="width:100px;">Rate</th>
+              <th style="width:68px;">Disc %</th>
+              <th style="width:110px;">Gross Amount</th>
+              <th style="width:80px;">CGST %</th>
+              <th style="width:80px;">SGST %</th>
             </tr>
           </thead>
           <tbody id="itemsBody">
@@ -1371,6 +1398,7 @@
               <td><input class="item-grade" value="M30" oninput="handleGradeInputChange(this)"/></td>
               <td><input class="item-qty" type="number" step="0.01" value="0.00"/></td>
               <td><input class="item-rate" type="number" step="0.01" value="0.00"/></td>
+              <td><input class="item-disc" type="number" step="0.01" value="0.00" min="0" max="100"/></td>
               <td class="rightcell item-gross">0.00</td>
               <td><input class="item-cgst" type="number" step="0.01" value="9.00"/></td>
               <td><input class="item-sgst" type="number" step="0.01" value="9.00"/></td>
@@ -1396,7 +1424,10 @@
               <tr><td>Sub Total</td><td class="rightcell" id="subTotal">0.00</td></tr>
               <tr><td>CGST @ 9.0 %</td><td class="rightcell" id="cgstTotal">0.00</td></tr>
               <tr><td>SGST @ 9.0 %</td><td class="rightcell" id="sgstTotal">0.00</td></tr>
-              <tr><td>TCS @ 0.0 %</td><td class="rightcell" id="tcsAmount">0.00</td></tr>
+              <tr>
+                <td>TCS @ <input id="tcsPct" type="number" step="0.01" value="0.00" min="0" style="width:34px;border:none;border-bottom:1px solid #aaa;text-align:center;font-size:12px;padding:0 2px;background:transparent;" oninput="recalcAll()" title="Enter TCS %"> %</td>
+                <td class="rightcell" id="tcsAmount">0.00</td>
+              </tr>
               <tr><td style="font-weight:700">Net Amount</td><td class="rightcell" id="netAmount" style="font-weight:700">0.00</td></tr>
             </table>
           </div>
@@ -1415,6 +1446,15 @@
             <li>Interest @ 24% p.a. for overdue payments.</li>
             <li>Disputes subject to Tumkur jurisdiction.</li>
           </ol>
+        </div>
+
+        <div class="no-print" style="margin-top:8px; border:1px dashed #ccc; padding:6px; border-radius:4px; background:#fffbeb;">
+          <label style="font-weight:700;font-size:11px;color:#92400e;">🔒 Internal Notes (not printed):</label>
+          <textarea id="invoiceNotes" style="width:100%;min-height:34px;font-size:12px;border:none;background:transparent;padding:2px;margin-top:2px;resize:vertical;" placeholder="Internal tracking notes, project references, reminders…"></textarea>
+        </div>
+        <div style="border:1px solid #000;padding:6px;margin-top:8px;">
+          <label style="font-weight:700;font-size:12px;">Remarks:</label>
+          <textarea id="invoiceRemarks" style="width:100%;min-height:32px;font-size:12px;border:none;padding:2px;margin-top:2px;resize:vertical;" placeholder="Special instructions or notes for the customer…"></textarea>
         </div>
 
         <div class="sign-row">
@@ -1480,7 +1520,7 @@
 
               <div class="gp-row c3">
                 <div class="f"><label>GP No.</label><input id="gpno" type="text" placeholder="NI-GP-2526-001"></div>
-                <div class="f"><label>Date</label><input id="gpdate" type="date"></div>
+                <div class="f"><label>Date &amp; Time</label><input id="gpdate" type="datetime-local"></div>
                 <div class="f"><label>Vehicle No.</label><input id="vehicle" type="text" placeholder="KA-03-AB-1234"></div>
               </div>
 
@@ -1975,6 +2015,146 @@
       </div>
     </div>
 
+    <!-- ══ VIEW: GATE PASS HISTORY ══ -->
+    <div id="view-gphistory" class="view-panel">
+      <div class="view-header">
+        <div class="view-title">
+          <h2>Gate Pass History</h2>
+          <p>Browse, search, and export all saved outward gate pass records</p>
+        </div>
+        <div class="action-bar">
+          <button class="btn secondary" onclick="exportGatePassesCSV()">📊 Export CSV</button>
+          <button class="btn accent" onclick="switchView('gatepass'); clearForm();">+ New Gate Pass</button>
+        </div>
+      </div>
+      <div class="card" style="padding:14px; margin-bottom:14px;">
+        <input type="text" id="gph-search" placeholder="Search by GP No, destination, vehicle, driver…" style="width:100%; padding:8px;" oninput="renderGPHistoryView()">
+      </div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="table-container" style="border:none; border-radius:0; margin-top:0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>GP No.</th>
+                <th>Date / Time</th>
+                <th>Destination</th>
+                <th class="hide-mobile">Vehicle No.</th>
+                <th class="hide-mobile">Driver</th>
+                <th>Material</th>
+                <th>Pass Type</th>
+                <th style="text-align:right;">Total Qty</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="gp-hist-tbody">
+              <tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text-muted);">No gate passes saved yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VIEW: COMPANY SETTINGS ══ -->
+    <div id="view-settings" class="view-panel">
+      <div class="view-header">
+        <div class="view-title">
+          <h2>Company Settings</h2>
+          <p>Edit company identity, bank details, and GST info — applied live to all invoices &amp; gate passes</p>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px;">
+        <div class="card">
+          <h3 style="font-size:15px; font-weight:700; margin-bottom:14px; color: var(--primary);">Company Identity &amp; Bank Details</h3>
+          <form onsubmit="saveCompanySettings(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Company Name *</label>
+                <input type="text" id="cs-name" required oninput="updateSettingsPreview()">
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="cs-phone" oninput="updateSettingsPreview()">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label>Full Registered Address</label>
+              <textarea id="cs-address" oninput="updateSettingsPreview()"></textarea>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>GSTIN</label>
+                <input type="text" id="cs-gstin" oninput="updateSettingsPreview()">
+              </div>
+              <div class="form-group">
+                <label>CIN Number</label>
+                <input type="text" id="cs-cin" oninput="updateSettingsPreview()">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label>Logo Image URL / Filename</label>
+              <input type="text" id="cs-logo-url" placeholder="NIYAKRISH.png or full URL">
+            </div>
+            <h3 style="font-size:13px; font-weight:700; margin:14px 0 10px; color: var(--accent); border-top:1px solid var(--border-color); padding-top:10px;">Bank Account Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" id="cs-bank-name" oninput="updateSettingsPreview()">
+              </div>
+              <div class="form-group">
+                <label>Account Name</label>
+                <input type="text" id="cs-bank-acc-name">
+              </div>
+              <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="cs-bank-acc-no" oninput="updateSettingsPreview()">
+              </div>
+              <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" id="cs-bank-ifsc" oninput="updateSettingsPreview()">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label>Branch Name</label>
+              <input type="text" id="cs-bank-branch">
+            </div>
+            <button type="submit" class="btn accent" style="width:100%; justify-content:center;">💾 Save &amp; Apply Settings</button>
+          </form>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div class="card">
+            <h3 style="font-size:14px; font-weight:700; margin-bottom:12px; color: var(--primary);">Live Preview</h3>
+            <div style="border:1px solid var(--border-color); border-radius:8px; padding:14px; background:#f8fafc; font-size:12px; line-height:1.6;">
+              <div style="font-weight:800; font-size:13px; margin-bottom:3px;" id="cs-preview-name">—</div>
+              <div style="color:#555; font-size:11px; margin-bottom:6px;" id="cs-preview-address">—</div>
+              <div>GSTIN: <b id="cs-preview-gstin">—</b></div>
+              <div>CIN: <b id="cs-preview-cin">—</b></div>
+              <hr style="margin:8px 0; border-color:#e2e8f0;">
+              <div><b id="cs-preview-bank">—</b></div>
+              <div>A/C: <b id="cs-preview-accno">—</b></div>
+              <div>IFSC: <b id="cs-preview-ifsc">—</b></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:14px; font-weight:700; margin-bottom:12px; color: var(--primary);">⌨ Keyboard Shortcuts</h3>
+            <div style="font-size:12px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; justify-content:space-between; padding:6px 10px; background:#f1f5f9; border-radius:6px; align-items:center;">
+                <span>Save Invoice</span><kbd style="background:#e2e8f0;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;">Ctrl+S</kbd>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 10px; background:#f1f5f9; border-radius:6px; align-items:center;">
+                <span>Print Invoice / Gate Pass</span><kbd style="background:#e2e8f0;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;">Ctrl+P</kbd>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 10px; background:#f1f5f9; border-radius:6px; align-items:center;">
+                <span>New Invoice</span><kbd style="background:#e2e8f0;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;">Ctrl+N</kbd>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 10px; background:#f1f5f9; border-radius:6px; align-items:center;">
+                <span>Close Sidebar</span><kbd style="background:#e2e8f0;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;">Esc</kbd>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /.main-content -->
 
   <!-- ====== Summary Modal ====== -->
@@ -2093,8 +2273,9 @@
     // ── View labels for mobile top bar ──
     const VIEW_LABELS = {
       dashboard: 'Dashboard', invoice: 'Invoice Builder', history: 'History',
-      gatepass: 'Gate Pass', customers: 'Customers', payments: 'Payments',
-      ledger: 'Ledger', datacenter: 'Data Center'
+      gatepass: 'Gate Pass', gphistory: 'GP History', customers: 'Customers',
+      payments: 'Payments', ledger: 'Ledger', datacenter: 'Data Center',
+      settings: 'Settings'
     };
 
     function switchView(viewId) {
@@ -2134,8 +2315,12 @@
         renderPaymentsHistoryTable();
       } else if (viewId === 'ledger') {
         loadCustomerSelects();
+      } else if (viewId === 'gphistory') {
+        renderGPHistoryView();
+      } else if (viewId === 'settings') {
+        loadCompanySettingsForm();
       }
-      
+
       // Mirror autofill dropdowns
       loadAutofills();
     }
@@ -2231,6 +2416,12 @@
       document.getElementById('stat-collected').textContent = '₹' + formatNum(collected);
       document.getElementById('stat-outstanding').textContent = '₹' + formatNum(outstanding);
       document.getElementById('stat-gatepasses').textContent = gps.length;
+
+      const overdueInvs = getOverdueInvoices();
+      const overdueEl = document.getElementById('stat-overdue');
+      const overdueCard = document.getElementById('stat-overdue-card');
+      if (overdueEl) overdueEl.textContent = overdueInvs.length;
+      if (overdueCard) overdueCard.style.borderColor = overdueInvs.length > 0 ? '#ef4444' : 'var(--border-color)';
 
       // Update unpaid invoice badge in sidebar
       const unpaidCount = invs.filter(i => (i.status || 'Unpaid') !== 'Paid').length;
@@ -2570,8 +2761,14 @@
       gpSelect.innerHTML = options;
 
       if(filterCust) {
-        filterCust.innerHTML = `<option value="">All Customers</option>` + 
+        filterCust.innerHTML = `<option value="">All Customers</option>` +
           customers.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
+      }
+
+      // Customer name autocomplete datalist for invoice
+      const datalist = document.getElementById('customer-names-list');
+      if (datalist) {
+        datalist.innerHTML = customers.map(c => `<option value="${escapeHtml(c.name)}">`).join('');
       }
     }
 
@@ -3039,8 +3236,10 @@
         const due = net - paid;
         const status = inv.status || 'Unpaid';
 
+        const isOverdue = (status !== 'Paid') && inv.dueDate && new Date(inv.dueDate) < new Date();
         let badge = '';
         if (status === 'Paid') badge = `<span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:20px;font-weight:700;font-size:11px;">✓ Paid</span>`;
+        else if (isOverdue) badge = `<span style="background:#fef2f2;color:#991b1b;padding:2px 8px;border-radius:20px;font-weight:700;font-size:11px;">🔴 Overdue</span>`;
         else if (status === 'Partially Paid') badge = `<span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-weight:700;font-size:11px;">⚡ Partial</span>`;
         else badge = `<span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:20px;font-weight:700;font-size:11px;">⏳ Unpaid</span>`;
 
@@ -3358,6 +3557,7 @@
         <td><input class="item-grade" value="M30" oninput="handleGradeInputChange(this)"/></td>
         <td><input class="item-qty" type="number" step="0.01" value="0.00"/></td>
         <td><input class="item-rate" type="number" step="0.01" value="0.00"/></td>
+        <td><input class="item-disc" type="number" step="0.01" value="0.00" min="0" max="100"/></td>
         <td class="rightcell item-gross">0.00</td>
         <td><input class="item-cgst" type="number" step="0.01" value="9.00"/></td>
         <td><input class="item-sgst" type="number" step="0.01" value="9.00"/></td>
@@ -3375,7 +3575,7 @@
     }
     function setupRowListeners(ctx){
       const root = ctx || document;
-      root.querySelectorAll('.item-qty, .item-rate, .item-cgst, .item-sgst').forEach(i=> i.addEventListener('input', recalcAll));
+      root.querySelectorAll('.item-qty, .item-rate, .item-disc, .item-cgst, .item-sgst').forEach(i=> i.addEventListener('input', recalcAll));
     }
 
     /* ========= Summary Functions ========= */
@@ -3437,32 +3637,36 @@
     function recalcAll(){
       let subtotal = 0, cgstTotal=0, sgstTotal=0;
       document.querySelectorAll('#itemsBody tr').forEach(r=>{
-        const qty = toNumber(r.querySelector('.item-qty')?.value);
+        const qty  = toNumber(r.querySelector('.item-qty')?.value);
         const rate = toNumber(r.querySelector('.item-rate')?.value);
-        const cg = toNumber(r.querySelector('.item-cgst')?.value);
-        const sg = toNumber(r.querySelector('.item-sgst')?.value);
-        const gross = qty * rate;
+        const disc = toNumber(r.querySelector('.item-disc')?.value);
+        const cg   = toNumber(r.querySelector('.item-cgst')?.value);
+        const sg   = toNumber(r.querySelector('.item-sgst')?.value);
+        const gross = qty * rate * (1 - disc / 100);
         subtotal += gross;
-        cgstTotal += gross * cg/100;
-        sgstTotal += gross * sg/100;
+        cgstTotal += gross * cg / 100;
+        sgstTotal += gross * sg / 100;
         const grossCell = r.querySelector('.item-gross');
-        if(grossCell) grossCell.textContent = formatNum(gross);
+        if (grossCell) grossCell.textContent = formatNum(gross);
       });
-      const net = subtotal + cgstTotal + sgstTotal;
-      
-      const subTotalEl = document.getElementById('subTotal');
+
+      const tcsPct = toNumber(document.getElementById('tcsPct')?.value);
+      const tcsAmt = subtotal * tcsPct / 100;
+      const net = subtotal + cgstTotal + sgstTotal + tcsAmt;
+
+      const subTotalEl  = document.getElementById('subTotal');
       const cgstTotalEl = document.getElementById('cgstTotal');
       const sgstTotalEl = document.getElementById('sgstTotal');
       const tcsAmountEl = document.getElementById('tcsAmount');
       const netAmountEl = document.getElementById('netAmount');
-      const wordsEl = document.getElementById('words');
+      const wordsEl     = document.getElementById('words');
 
-      if (subTotalEl) subTotalEl.textContent = formatNum(subtotal);
+      if (subTotalEl)  subTotalEl.textContent  = formatNum(subtotal);
       if (cgstTotalEl) cgstTotalEl.textContent = formatNum(cgstTotal);
       if (sgstTotalEl) sgstTotalEl.textContent = formatNum(sgstTotal);
-      if (tcsAmountEl) tcsAmountEl.textContent = formatNum(0);
+      if (tcsAmountEl) tcsAmountEl.textContent = formatNum(tcsAmt);
       if (netAmountEl) netAmountEl.textContent = formatNum(net);
-      if (wordsEl) wordsEl.textContent = numberToWords(net);
+      if (wordsEl)     wordsEl.textContent     = numberToWords(net);
     }
 
     // ======= Serialize/Load =======
@@ -3470,10 +3674,11 @@
       const rows = [];
       document.querySelectorAll('#itemsBody tr').forEach(r=>{
         rows.push({
-          grade: r.querySelector('.item-grade')?.value || '',
-          qty: toNumber(r.querySelector('.item-qty')?.value),
-          rate: toNumber(r.querySelector('.item-rate')?.value),
-          gross: toNumber((r.querySelector('.item-gross')?.textContent)||0),
+          grade:    r.querySelector('.item-grade')?.value || '',
+          qty:      toNumber(r.querySelector('.item-qty')?.value),
+          rate:     toNumber(r.querySelector('.item-rate')?.value),
+          disc_pct: toNumber(r.querySelector('.item-disc')?.value),
+          gross:    toNumber((r.querySelector('.item-gross')?.textContent)||0),
           cgst_pct: toNumber(r.querySelector('.item-cgst')?.value),
           sgst_pct: toNumber(r.querySelector('.item-sgst')?.value),
           selected: !!r.querySelector('.row-select')?.checked
@@ -3488,9 +3693,10 @@
       const wordsText = document.getElementById('words')?.textContent || '';
 
       const data = {
-        invoiceNo: document.getElementById('invoiceNo').value,
+        invoiceNo:   document.getElementById('invoiceNo').value,
         invoiceDate: document.getElementById('invoiceDate').value,
-        poNumber: document.getElementById('poNumber').value,
+        dueDate:     document.getElementById('dueDate')?.value || '',
+        poNumber:    document.getElementById('poNumber').value,
         customer: {
           name: document.getElementById('custName').value,
           phone: document.getElementById('custPhone').value,
@@ -3514,6 +3720,9 @@
           netAmount: toNumber(netAmountText)
         },
         amountWords: wordsText,
+        tcsPct:  toNumber(document.getElementById('tcsPct')?.value),
+        notes:   document.getElementById('invoiceNotes')?.value || '',
+        remarks: document.getElementById('invoiceRemarks')?.value || '',
         paidAmount: 0,
         status: 'Unpaid',
         rows
@@ -3526,6 +3735,7 @@
       document.getElementById('invoiceNo').value = inv.invoiceNo || peekNextInvoiceNo();
       document.getElementById('invoiceDate').value = inv.invoiceDate || new Date().toISOString().slice(0,16);
       document.getElementById('poNumber').value = inv.poNumber || '';
+      if (document.getElementById('dueDate')) document.getElementById('dueDate').value = inv.dueDate || '';
       // Customer
       document.getElementById('custName').value = inv.customer?.name || '';
       document.getElementById('custPhone').value = inv.customer?.phone || '';
@@ -3562,6 +3772,7 @@
           <td><input class="item-grade" value="${row.grade??'M30'}" oninput="handleGradeInputChange(this)"/></td>
           <td><input class="item-qty" type="number" step="0.01" value="${(row.qty??0).toFixed(2)}"/></td>
           <td><input class="item-rate" type="number" step="0.01" value="${(row.rate??0).toFixed(2)}"/></td>
+          <td><input class="item-disc" type="number" step="0.01" value="${(row.disc_pct??0).toFixed(2)}" min="0" max="100"/></td>
           <td class="rightcell item-gross">0.00</td>
           <td><input class="item-cgst" type="number" step="0.01" value="${(row.cgst_pct??9).toFixed(2)}"/></td>
           <td><input class="item-sgst" type="number" step="0.01" value="${(row.sgst_pct??9).toFixed(2)}"/></td>
@@ -3569,6 +3780,13 @@
         tbody.appendChild(tr);
         setupRowListeners(tr);
       });
+
+      // Restore extended fields
+      if (document.getElementById('tcsPct'))        document.getElementById('tcsPct').value = (inv.tcsPct ?? 0).toFixed(2);
+      if (document.getElementById('invoiceNotes'))   document.getElementById('invoiceNotes').value  = inv.notes   || '';
+      if (document.getElementById('invoiceRemarks')) document.getElementById('invoiceRemarks').value = inv.remarks || '';
+      if (document.getElementById('custGSTIN'))      document.getElementById('custGSTIN').value = inv.customer?.gstin || '';
+
       recalcAll();
     }
 
@@ -4123,7 +4341,7 @@
       const now = new Date();
       const gpdateInput = document.getElementById('gpdate');
       if (gpdateInput) {
-        gpdateInput.value = now.toISOString().split('T')[0];
+        gpdateInput.value = now.toISOString().slice(0, 16);
       }
       
       // Only generate a new GP number if the field is empty
@@ -4221,6 +4439,266 @@
       return String(s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
+    // ======= OVERDUE DETECTION =======
+    function getOverdueInvoices() {
+      const today = new Date(); today.setHours(0,0,0,0);
+      return getStoredInvoices().filter(inv => {
+        if ((inv.status || 'Unpaid') === 'Paid') return false;
+        if (inv.dueDate) return new Date(inv.dueDate) < today;
+        if (inv.invoiceDate) {
+          const daysDiff = (today - new Date(inv.invoiceDate.slice(0,10))) / 86400000;
+          return daysDiff > 45;
+        }
+        return false;
+      });
+    }
+
+    // ======= MARK INVOICE AS PAID =======
+    function markInvoiceAsPaid() {
+      const invNo = document.getElementById('invoiceNo').value;
+      if (!invNo) { showToast('⚠️ No invoice loaded', 'error'); return; }
+      recalcAll();
+      const netAmt = toNumber(document.getElementById('netAmount').textContent);
+      if (netAmt <= 0) { showToast('⚠️ Invoice has zero amount', 'error'); return; }
+      if (!confirm(`Mark Invoice #${invNo} as fully PAID (₹${formatNum(netAmt)})?`)) return;
+
+      let all = getStoredInvoices();
+      const idx = all.findIndex(x => x.invoiceNo === invNo);
+      if (idx < 0) { saveInvoiceToStorage(); all = getStoredInvoices(); }
+      const finalIdx = all.findIndex(x => x.invoiceNo === invNo);
+      if (finalIdx < 0) { showToast('⚠️ Save invoice first', 'error'); return; }
+
+      all[finalIdx].paidAmount = all[finalIdx].totals?.netAmount || netAmt;
+      all[finalIdx].status = 'Paid';
+      saveStoredInvoices(all);
+
+      const newPay = {
+        id: 'pay_' + Math.random().toString(36).substr(2, 9),
+        customerName: document.getElementById('custName').value,
+        linkedInvoice: invNo,
+        date: new Date().toISOString().split('T')[0],
+        amount: all[finalIdx].paidAmount,
+        paymentMode: 'Cash',
+        refNo: '',
+        notes: 'Marked as paid from invoice builder',
+        createdAt: new Date().toISOString()
+      };
+      const allPays = getStoredPayments();
+      allPays.push(newPay);
+      saveStoredPayments(allPays);
+
+      showToast('✅ Invoice #' + invNo + ' marked as PAID', 'success');
+    }
+
+    // ======= WHATSAPP SHARE =======
+    function shareWhatsApp() {
+      recalcAll();
+      const invNo    = document.getElementById('invoiceNo').value || 'N/A';
+      const custName = document.getElementById('custName').value  || '-';
+      const invDate  = (document.getElementById('invoiceDate').value || '').slice(0,10) || '-';
+      const dueDate  = document.getElementById('dueDate')?.value || '-';
+      const netAmt   = document.getElementById('netAmount').textContent || '0.00';
+
+      const rows = [];
+      document.querySelectorAll('#itemsBody tr').forEach(r => {
+        const grade = r.querySelector('.item-grade')?.value;
+        const qty   = r.querySelector('.item-qty')?.value;
+        const gross = r.querySelector('.item-gross')?.textContent;
+        if (grade && toNumber(gross) > 0) rows.push(`  • ${grade}: ${qty} units = ₹${gross}`);
+      });
+
+      const s = getCompanySettings();
+      const msg = [
+        `*INVOICE #${invNo}*`,
+        `*${s.name}*`,
+        `─────────────────`,
+        `Customer : ${custName}`,
+        `Date     : ${invDate}`,
+        `Due Date : ${dueDate}`,
+        ``,
+        `*Items:*`,
+        ...rows,
+        `─────────────────`,
+        `*Net Amount: ₹${netAmt}*`,
+        ``,
+        `Bank : ${s.bankName}`,
+        `A/C  : ${s.bankAccNo}`,
+        `IFSC : ${s.bankIfsc}`,
+        ``,
+        `Thank you for your business! 🙏`
+      ].join('\n');
+
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    // ======= GSTIN VALIDATOR =======
+    function validateGSTIN(el) {
+      const val = el.value.trim().toUpperCase();
+      el.value = val;
+      const pattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+      const badge = document.getElementById('gstin-badge');
+      if (!badge) return;
+      if (!val) { badge.textContent = ''; return; }
+      if (pattern.test(val)) { badge.textContent = '✓ Valid'; badge.style.color = '#10b981'; }
+      else                   { badge.textContent = '✗ Invalid'; badge.style.color = '#ef4444'; }
+    }
+
+    // ======= GATE PASS HISTORY =======
+    function renderGPHistoryView() {
+      const q    = (document.getElementById('gph-search')?.value || '').trim().toLowerCase();
+      let data   = getStoredGatePasses();
+      if (q) data = data.filter(g =>
+        (g.gpno   || '').toLowerCase().includes(q) ||
+        (g.dest   || '').toLowerCase().includes(q) ||
+        (g.vehicle|| '').toLowerCase().includes(q) ||
+        (g.driver || '').toLowerCase().includes(q)
+      );
+      data.sort((a,b) => (b.gpdate || '').localeCompare(a.gpdate || ''));
+
+      const tbody = document.getElementById('gp-hist-tbody');
+      if (!tbody) return;
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text-muted);">No gate passes found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = data.map(gp => `
+        <tr>
+          <td style="font-weight:700;color:var(--accent);">${escapeHtml(gp.gpno)}</td>
+          <td style="white-space:nowrap;">${(gp.gpdate || '-').replace('T',' ')}</td>
+          <td style="font-weight:600;">${escapeHtml(gp.dest || '-')}</td>
+          <td class="hide-mobile">${escapeHtml(gp.vehicle || '-')}</td>
+          <td class="hide-mobile">${escapeHtml(gp.driver || '-')}</td>
+          <td><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">${escapeHtml(gp.mtype || '-')}</span></td>
+          <td><span style="background:${gp.ptype==='Returnable'?'#fef3c7':'#f1f5f9'};color:${gp.ptype==='Returnable'?'#92400e':'#475569'};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">${escapeHtml(gp.ptype || '-')}</span></td>
+          <td style="text-align:right;font-weight:700;">${escapeHtml(gp.totalQty || '-')}</td>
+          <td>
+            <button class="btn danger" style="padding:4px 8px;font-size:11px;" onclick="deleteGatePass('${gp.id}')">Del</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteGatePass(id) {
+      if (!confirm('Delete this gate pass record?')) return;
+      saveStoredGatePasses(getStoredGatePasses().filter(x => x.id !== id));
+      renderGPHistoryView();
+      showToast('Gate pass record deleted', 'success');
+    }
+
+    // ======= COMPANY SETTINGS =======
+    function getDefaultCompanySettings() {
+      return {
+        name: 'NIYAKRISH INDUSTRIES PRIVATE LIMITED',
+        address: 'SURVEY NO: 428, HASIGE HOBALI, KUNIGAL TALUK, HULIYURDURGA, TUMKUR, KARNATAKA-572123',
+        gstin: '29AAKCN0823D1ZM', cin: 'U43123KA2025PTC196481', phone: '94497 17943',
+        bankName: 'HDFC BANK', bankAccName: 'NIYAKRISH INDUSTRIES PVT LTD',
+        bankAccNo: '99994497179436', bankIfsc: 'HDFC0001232',
+        bankBranch: 'PEENYA INDUSTRIAL AREA, BANGALORE', logoUrl: 'NIYAKRISH.png'
+      };
+    }
+
+    function getCompanySettings() {
+      try { return JSON.parse(localStorage.getItem('company_settings') || 'null') || getDefaultCompanySettings(); }
+      catch(e) { return getDefaultCompanySettings(); }
+    }
+
+    function saveCompanySettings(e) {
+      if (e) e.preventDefault();
+      const s = {
+        name:       document.getElementById('cs-name').value.trim(),
+        address:    document.getElementById('cs-address').value.trim(),
+        gstin:      document.getElementById('cs-gstin').value.trim(),
+        cin:        document.getElementById('cs-cin').value.trim(),
+        phone:      document.getElementById('cs-phone').value.trim(),
+        bankName:   document.getElementById('cs-bank-name').value.trim(),
+        bankAccName:document.getElementById('cs-bank-acc-name').value.trim(),
+        bankAccNo:  document.getElementById('cs-bank-acc-no').value.trim(),
+        bankIfsc:   document.getElementById('cs-bank-ifsc').value.trim(),
+        bankBranch: document.getElementById('cs-bank-branch').value.trim(),
+        logoUrl:    document.getElementById('cs-logo-url').value.trim()
+      };
+      localStorage.setItem('company_settings', JSON.stringify(s));
+      applyCompanySettings(s);
+      showToast('✓ Company settings saved & applied to all invoices', 'success');
+    }
+
+    function loadCompanySettingsForm() {
+      const s = getCompanySettings();
+      document.getElementById('cs-name').value         = s.name;
+      document.getElementById('cs-address').value      = s.address;
+      document.getElementById('cs-gstin').value        = s.gstin;
+      document.getElementById('cs-cin').value          = s.cin;
+      document.getElementById('cs-phone').value        = s.phone;
+      document.getElementById('cs-bank-name').value    = s.bankName;
+      document.getElementById('cs-bank-acc-name').value= s.bankAccName;
+      document.getElementById('cs-bank-acc-no').value  = s.bankAccNo;
+      document.getElementById('cs-bank-ifsc').value    = s.bankIfsc;
+      document.getElementById('cs-bank-branch').value  = s.bankBranch;
+      document.getElementById('cs-logo-url').value     = s.logoUrl;
+      updateSettingsPreview();
+    }
+
+    function updateSettingsPreview() {
+      const get = id => document.getElementById(id)?.value || '';
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      set('cs-preview-name',  get('cs-name'));
+      set('cs-preview-address', get('cs-address').slice(0,70) + (get('cs-address').length>70?'…':''));
+      set('cs-preview-gstin', get('cs-gstin'));
+      set('cs-preview-cin',   get('cs-cin'));
+      set('cs-preview-bank',  get('cs-bank-name'));
+      set('cs-preview-accno', get('cs-bank-acc-no'));
+      set('cs-preview-ifsc',  get('cs-bank-ifsc'));
+    }
+
+    function applyCompanySettings(s) {
+      const companyEl = document.querySelector('.center .company');
+      if (companyEl) companyEl.textContent = s.name;
+
+      const addrEl = document.querySelector('.center .addr');
+      if (addrEl) addrEl.textContent = `${s.address}\nGSTIN: ${s.gstin}\nCIN NO: ${s.cin}`;
+
+      const logoEl = document.querySelector('.logo img');
+      if (logoEl && s.logoUrl) logoEl.src = s.logoUrl;
+
+      const bankDiv = document.querySelector('.bank');
+      if (bankDiv) {
+        bankDiv.innerHTML = `
+          <div style="font-weight:700; margin-bottom:4px;">Bank Details</div>
+          <div>Bank Name: <b>${escapeHtml(s.bankName)}</b></div>
+          <div>A/C Name: <b>${escapeHtml(s.bankAccName)}</b></div>
+          <div>A/C No: <b>${escapeHtml(s.bankAccNo)}</b></div>
+          <div>IFSC Code: <b>${escapeHtml(s.bankIfsc)}</b></div>
+          <div>Branch: <b>${escapeHtml(s.bankBranch)}</b></div>
+          <div style="margin-top:6px; font-size:12px;">Amount in Words : <span id="words" class="small"></span></div>`;
+        recalcAll();
+      }
+
+      document.querySelectorAll('.co-name').forEach(el => el.textContent = s.name);
+      document.querySelectorAll('.co-meta').forEach(el => {
+        el.innerHTML = `GST: ${escapeHtml(s.gstin)} &nbsp;|&nbsp; CIN: ${escapeHtml(s.cin)}<br>
+          ${escapeHtml(s.address)} &nbsp;|&nbsp; Ph: ${escapeHtml(s.phone)}`;
+      });
+    }
+
+    // ======= KEYBOARD SHORTCUTS =======
+    document.addEventListener('keydown', function(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+      if (!(e.ctrlKey || e.metaKey)) return;
+      const activeId = document.querySelector('.view-panel.active')?.id;
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        if (activeId === 'view-invoice') { saveInvoiceToStorage(); showToast('✓ Invoice saved (Ctrl+S)', 'success'); }
+      } else if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        if (activeId === 'view-invoice') printInvoice();
+        else if (activeId === 'view-gatepass') printGatePass();
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        if (activeId === 'view-invoice') newInvoice();
+        else { switchView('invoice'); newInvoice(); }
+      }
+    });
+
     // ======= Init & Window Load =======
     function init(){
       const invoiceNoInput = document.getElementById('invoiceNo');
@@ -4229,6 +4707,7 @@
       const now = new Date();
       document.getElementById('invoiceDate').value = now.toISOString().slice(0,16);
       
+      applyCompanySettings(getCompanySettings());
       setupRowListeners(document);
       recalcAll();
       updateDashboardMetrics();
