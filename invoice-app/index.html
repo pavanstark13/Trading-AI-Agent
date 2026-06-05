@@ -5,6 +5,7 @@
   <!-- Firebase compat SDK (v9 compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Niyakrish Industries – Enterprise Control Center</title>
@@ -1045,9 +1046,58 @@
       }
       .btn:hover { transform: none; opacity: 1; }
     }
+  /* ── LOGIN OVERLAY ── */
+  #login-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #login-overlay.hidden { display: none; }
+  .login-box {
+    background: #1e293b; border: 1px solid #334155; border-radius: 20px;
+    padding: 48px 40px; width: 100%; max-width: 420px; text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  }
+  .login-box .login-logo {
+    font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  .login-box .login-sub {
+    font-size: 13px; color: #94a3b8; margin-bottom: 32px;
+  }
+  .login-box input {
+    width: 100%; padding: 14px 16px; border-radius: 10px; font-size: 15px;
+    border: 1px solid #334155; background: #0f172a; color: #f1f5f9;
+    margin-bottom: 14px; box-sizing: border-box; outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-box input:focus { border-color: #6366f1; }
+  .login-box .login-btn {
+    width: 100%; padding: 14px; border-radius: 10px; font-size: 15px;
+    font-weight: 700; background: #6366f1; color: #fff; border: none;
+    cursor: pointer; transition: background 0.2s; margin-top: 4px;
+  }
+  .login-box .login-btn:hover { background: #4f46e5; }
+  .login-box .login-btn:disabled { background: #475569; cursor: not-allowed; }
+  #login-error {
+    color: #f87171; font-size: 13px; margin-top: 10px; min-height: 20px;
+  }
   </style>
 </head>
 <body>
+
+  <!-- ── LOGIN OVERLAY ── -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <div class="login-logo">🏭 Niyakrish Industries</div>
+      <div class="login-sub">Enterprise Invoice Control Center</div>
+      <input type="email" id="login-email" placeholder="Email address" autocomplete="username"/>
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') doLogin()"/>
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+      <div id="login-error"></div>
+    </div>
+  </div>
 
   <!-- Hidden iframe for multi-copy printing -->
 
@@ -1127,7 +1177,9 @@
       </button>
     </div>
     <div class="sidebar-footer">
-      &copy; 2026 Niyakrish Ind.
+      <div id="logged-in-user" style="font-size:11px; color:#94a3b8; margin-bottom:8px; word-break:break-all;"></div>
+      <button onclick="doLogout()" style="width:100%; padding:8px; border-radius:8px; background:#ef4444; color:#fff; border:none; cursor:pointer; font-size:12px; font-weight:600;">🚪 Sign Out</button>
+      <div style="margin-top:8px;">&copy; 2026 Niyakrish Ind.</div>
     </div>
   </div>
 
@@ -2454,6 +2506,42 @@
     let db = null;
     const CLOUD_KEYS = ['invoices','invoice_customers','invoice_payments','invoice_gatepasses','invoice_seq','company_settings'];
 
+    // ── AUTH ──
+    let auth = null;
+
+    function doLogin(){
+      const email = document.getElementById('login-email').value.trim();
+      const pass  = document.getElementById('login-password').value;
+      const btn   = document.getElementById('login-btn');
+      const err   = document.getElementById('login-error');
+      if(!email || !pass){ err.textContent = 'Enter email and password.'; return; }
+      btn.disabled = true; btn.textContent = 'Signing in…'; err.textContent = '';
+      auth.signInWithEmailAndPassword(email, pass)
+        .catch(e => {
+          err.textContent = e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found'
+            ? 'Incorrect email or password.' : e.message;
+          btn.disabled = false; btn.textContent = 'Sign In';
+        });
+    }
+
+    function doLogout(){
+      if(auth) auth.signOut();
+    }
+
+    function showApp(user){
+      document.getElementById('login-overlay').classList.add('hidden');
+      const el = document.getElementById('logged-in-user');
+      if(el) el.textContent = '👤 ' + (user.email || '');
+    }
+
+    function hideApp(){
+      document.getElementById('login-overlay').classList.remove('hidden');
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('login-btn').disabled = false;
+      document.getElementById('login-btn').textContent = 'Sign In';
+    }
+
     // Default config — overridable via Data Center UI
     const DEFAULT_FIREBASE_CONFIG = {
       apiKey: "AIzaSyAd0FzunhKRf_Mv65awqB86DAeaTif6_oE",
@@ -2472,6 +2560,11 @@
         const config = JSON.parse(cfg);
         if(!firebase.apps.length) firebase.initializeApp(config);
         db = firebase.firestore();
+        auth = firebase.auth();
+        // Listen for login/logout
+        auth.onAuthStateChanged(user => {
+          if(user){ showApp(user); } else { hideApp(); }
+        });
         updateCloudStatus('connected');
         populateFirebaseForm(config);
       }catch(e){
