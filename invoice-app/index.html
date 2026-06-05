@@ -1868,15 +1868,28 @@
           <p>Review total balances, invoices, payments, and print statement statements</p>
         </div>
         <div class="action-bar">
+          <button class="btn secondary" onclick="exportLedgerCSV()">📊 Export CSV</button>
           <button class="btn accent" onclick="printLedger()">🖨 Print Ledger Statement</button>
         </div>
       </div>
 
-      <div class="card no-print" style="padding: 12px; margin-bottom:12px; display:flex; align-items:center; gap:12px;">
-        <label>Select Client Account:</label>
-        <select id="ledger-customer-select" style="max-width:320px;" onchange="loadLedgerForCustomer(this.value)">
-          <option value="">-- Choose customer --</option>
-        </select>
+      <div class="card no-print" style="padding:12px; margin-bottom:12px; display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap;">
+        <div>
+          <label style="font-size:11px; display:block; margin-bottom:3px; color:#6b7280;">Client Account</label>
+          <select id="ledger-customer-select" style="min-width:220px; max-width:300px; padding:5px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:13px;" onchange="loadLedgerForCustomer(this.value)">
+            <option value="">-- Choose customer --</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px; display:block; margin-bottom:3px; color:#6b7280;">From Date</label>
+          <input type="date" id="ledger-date-from" style="padding:5px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:12px;" onchange="loadLedgerForCustomer(document.getElementById('ledger-customer-select').value)">
+        </div>
+        <div>
+          <label style="font-size:11px; display:block; margin-bottom:3px; color:#6b7280;">To Date</label>
+          <input type="date" id="ledger-date-to" style="padding:5px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:12px;" onchange="loadLedgerForCustomer(document.getElementById('ledger-customer-select').value)">
+        </div>
+        <button onclick="document.getElementById('ledger-date-from').value='';document.getElementById('ledger-date-to').value='';loadLedgerForCustomer(document.getElementById('ledger-customer-select').value);" style="padding:5px 12px; font-size:11px; border:1px solid #d1d5db; border-radius:4px; cursor:pointer; background:#fff; height:30px;">✕ Clear</button>
+        <button onclick="exportLedgerCSV()" style="padding:5px 14px; font-size:12px; background:#10b981; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:600; height:30px;">📊 Export CSV</button>
       </div>
 
       <!-- Ledger Print Area Container -->
@@ -2032,10 +2045,31 @@
 
         <!-- Export Block -->
         <div class="card">
-          <h3 style="font-size:15px; font-weight:700; margin-bottom:12px; color: var(--primary);">Spreadsheet Export (CSV)</h3>
-          <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
-            Export individual tables to `.csv` format to open directly in Microsoft Excel or Google Sheets.
-          </p>
+          <h3 style="font-size:15px; font-weight:700; margin-bottom:10px; color: var(--primary);">Spreadsheet Export (CSV)</h3>
+          <!-- Date Range Filter -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:12px; margin-bottom:14px;">
+            <div style="font-size:12px; font-weight:700; margin-bottom:10px; color:#374151;">📅 Date Range Filter <span style="font-weight:400; color:#6b7280; font-size:11px;">(leave blank = all records)</span></div>
+            <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:8px;">
+              <div>
+                <label style="font-size:11px; display:block; margin-bottom:2px; color:#6b7280;">From</label>
+                <input type="date" id="export-date-from" style="padding:5px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:12px;">
+              </div>
+              <div>
+                <label style="font-size:11px; display:block; margin-bottom:2px; color:#6b7280;">To</label>
+                <input type="date" id="export-date-to" style="padding:5px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:12px;">
+              </div>
+              <button onclick="clearExportDateRange()" style="padding:5px 12px; font-size:11px; border:1px solid #d1d5db; border-radius:4px; cursor:pointer; background:#fff; height:30px;">✕ Clear</button>
+            </div>
+            <!-- Quick presets -->
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span style="font-size:10px; color:#6b7280; line-height:22px;">Quick:</span>
+              <button onclick="setExportRange('this-month')" style="padding:2px 8px; font-size:10px; border:1px solid #6366f1; border-radius:12px; cursor:pointer; background:#eef2ff; color:#4f46e5;">This Month</button>
+              <button onclick="setExportRange('last-month')" style="padding:2px 8px; font-size:10px; border:1px solid #6366f1; border-radius:12px; cursor:pointer; background:#eef2ff; color:#4f46e5;">Last Month</button>
+              <button onclick="setExportRange('this-quarter')" style="padding:2px 8px; font-size:10px; border:1px solid #6366f1; border-radius:12px; cursor:pointer; background:#eef2ff; color:#4f46e5;">This Quarter</button>
+              <button onclick="setExportRange('this-year')" style="padding:2px 8px; font-size:10px; border:1px solid #6366f1; border-radius:12px; cursor:pointer; background:#eef2ff; color:#4f46e5;">This Year</button>
+              <button onclick="setExportRange('last-year')" style="padding:2px 8px; font-size:10px; border:1px solid #6366f1; border-radius:12px; cursor:pointer; background:#eef2ff; color:#4f46e5;">Last Year</button>
+            </div>
+          </div>
           <div style="display:flex; flex-direction:column; gap:8px;">
             <button class="btn secondary" style="justify-content:center;" onclick="exportSummary()">
               📊 Export Invoice Log CSV
@@ -3369,7 +3403,13 @@
       
       const statementDate = document.getElementById('ledger-statement-date');
       if (statementDate) {
-        statementDate.textContent = new Date().toLocaleDateString('en-IN', {year:'numeric', month:'short', day:'numeric'});
+        const lf = document.getElementById('ledger-date-from')?.value || '';
+        const lt = document.getElementById('ledger-date-to')?.value || '';
+        if(lf || lt) {
+          statementDate.textContent = `${lf||'Start'} to ${lt||'Today'}`;
+        } else {
+          statementDate.textContent = new Date().toLocaleDateString('en-IN', {year:'numeric', month:'short', day:'numeric'});
+        }
       }
 
       if(!custName) {
@@ -3414,7 +3454,7 @@
       );
 
       // Merge transactions chronologically
-      const txs = [];
+      let txs = [];
       invoices.forEach(i => {
         txs.push({
           date: i.invoiceDate ? i.invoiceDate.slice(0, 10) : '',
@@ -3437,6 +3477,12 @@
 
       // Sort by Date Ascending
       txs.sort((a,b) => a.date.localeCompare(b.date));
+
+      // Apply ledger date range filter
+      const ledgerFrom = document.getElementById('ledger-date-from')?.value || '';
+      const ledgerTo   = document.getElementById('ledger-date-to')?.value   || '';
+      if(ledgerFrom) txs = txs.filter(t => t.date >= ledgerFrom);
+      if(ledgerTo)   txs = txs.filter(t => t.date <= ledgerTo);
 
       let runningBal = 0;
       let totalDebit = 0;
@@ -3692,12 +3738,17 @@
 
     // CSV Table Exporters
     function exportGatePassesCSV() {
-      const data = getStoredGatePasses();
+      const dateFrom = document.getElementById('export-date-from')?.value || '';
+      const dateTo   = document.getElementById('export-date-to')?.value   || '';
+      let data = getStoredGatePasses();
+      if(dateFrom) data = data.filter(g => g.gpdate >= dateFrom);
+      if(dateTo)   data = data.filter(g => g.gpdate <= dateTo);
       let csv = "GatePass No,Date,Vehicle,Destination,Driver,Material,Pass Type,Challan No,Total Qty,Remarks\n";
       data.forEach(g => {
         csv += `"${g.gpno}","${g.gpdate}","${g.vehicle}","${g.dest.replace(/"/g, '""')}","${g.driver}","${g.mtype}","${g.ptype}","${g.challan}","${g.totalQty}","${(g.remarks || '').replace(/"/g, '""')}"\n`;
       });
-      downloadCSV(csv, 'outward_gate_passes.csv');
+      const suffix = (dateFrom || dateTo) ? `_${dateFrom||'start'}_to_${dateTo||'end'}` : '';
+      downloadCSV(csv, `gate_passes${suffix}.csv`);
     }
 
     function exportCustomersCSV() {
@@ -3710,12 +3761,80 @@
     }
 
     function exportPaymentsCSV() {
-      const data = getStoredPayments();
+      const dateFrom = document.getElementById('export-date-from')?.value || '';
+      const dateTo   = document.getElementById('export-date-to')?.value   || '';
+      let data = getStoredPayments();
+      if(dateFrom) data = data.filter(p => p.date >= dateFrom);
+      if(dateTo)   data = data.filter(p => p.date <= dateTo);
       let csv = "Date,Customer,Mode,Ref No,Amount,Notes\n";
       data.forEach(p => {
         csv += `"${p.date}","${p.customerName.replace(/"/g, '""')}","${p.paymentMode}","${p.refNo}","${p.amount}","${(p.notes || '').replace(/"/g, '""')}"\n`;
       });
-      downloadCSV(csv, 'receipt_payments.csv');
+      const suffix = (dateFrom || dateTo) ? `_${dateFrom||'start'}_to_${dateTo||'end'}` : '';
+      downloadCSV(csv, `payments${suffix}.csv`);
+    }
+
+    function clearExportDateRange() {
+      const f = document.getElementById('export-date-from');
+      const t = document.getElementById('export-date-to');
+      if(f) f.value = '';
+      if(t) t.value = '';
+    }
+
+    function setExportRange(preset) {
+      const now = new Date();
+      let from, to;
+      const pad = n => String(n).padStart(2,'0');
+      const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+      if(preset === 'this-month') {
+        from = new Date(now.getFullYear(), now.getMonth(), 1);
+        to   = new Date(now.getFullYear(), now.getMonth()+1, 0);
+      } else if(preset === 'last-month') {
+        from = new Date(now.getFullYear(), now.getMonth()-1, 1);
+        to   = new Date(now.getFullYear(), now.getMonth(), 0);
+      } else if(preset === 'this-quarter') {
+        const q = Math.floor(now.getMonth() / 3);
+        from = new Date(now.getFullYear(), q*3, 1);
+        to   = new Date(now.getFullYear(), q*3+3, 0);
+      } else if(preset === 'this-year') {
+        from = new Date(now.getFullYear(), 0, 1);
+        to   = new Date(now.getFullYear(), 11, 31);
+      } else if(preset === 'last-year') {
+        from = new Date(now.getFullYear()-1, 0, 1);
+        to   = new Date(now.getFullYear()-1, 11, 31);
+      }
+      if(from && to) {
+        const f = document.getElementById('export-date-from');
+        const t = document.getElementById('export-date-to');
+        if(f) f.value = fmt(from);
+        if(t) t.value = fmt(to);
+      }
+    }
+
+    function exportLedgerCSV() {
+      const custName = document.getElementById('ledger-customer-select')?.value;
+      if(!custName) { showToast('Please select a customer first', 'error'); return; }
+      const ledgerFrom = document.getElementById('ledger-date-from')?.value || '';
+      const ledgerTo   = document.getElementById('ledger-date-to')?.value   || '';
+      const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+      const headers = ['Date','Type','Reference','Debit (Invoice ₹)','Credit (Payment ₹)','Running Balance ₹'];
+      let csv = headers.map(esc).join(',') + '\n';
+      let invs = getStoredInvoices().filter(i => (i.customer?.name||'').trim().toLowerCase() === custName.trim().toLowerCase());
+      let pays = getStoredPayments().filter(p => (p.customerName||'').trim().toLowerCase() === custName.trim().toLowerCase());
+      const txs = [];
+      invs.forEach(i => txs.push({ date: i.invoiceDate?i.invoiceDate.slice(0,10):'', type:'Invoice', ref:i.invoiceNo, debit:i.totals?.netAmount||0, credit:0 }));
+      pays.forEach(p => txs.push({ date:p.date, type:`Payment (${p.paymentMode})`, ref:p.refNo||'Receipt', debit:0, credit:p.amount }));
+      txs.sort((a,b) => a.date.localeCompare(b.date));
+      let filtered = txs;
+      if(ledgerFrom) filtered = filtered.filter(t => t.date >= ledgerFrom);
+      if(ledgerTo)   filtered = filtered.filter(t => t.date <= ledgerTo);
+      let runBal = 0;
+      filtered.forEach(tx => {
+        runBal += tx.debit - tx.credit;
+        csv += [tx.date, tx.type, tx.ref, tx.debit||0, tx.credit||0, runBal.toFixed(2)].map(esc).join(',') + '\n';
+      });
+      const suffix = (ledgerFrom||ledgerTo) ? `_${ledgerFrom||'start'}_to_${ledgerTo||'end'}` : '';
+      downloadCSV(csv, `ledger_${custName.replace(/\s+/g,'_')}${suffix}.csv`);
     }
 
     function downloadCSV(csv, filename) {
@@ -3962,7 +4081,11 @@
     }
 
     function exportSummary(){
-      const invs = getStoredInvoices();
+      const dateFrom = document.getElementById('export-date-from')?.value || '';
+      const dateTo   = document.getElementById('export-date-to')?.value   || '';
+      let invs = getStoredInvoices();
+      if(dateFrom) invs = invs.filter(i => i.invoiceDate && i.invoiceDate.slice(0,10) >= dateFrom);
+      if(dateTo)   invs = invs.filter(i => i.invoiceDate && i.invoiceDate.slice(0,10) <= dateTo);
       const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
       const headers = [
         'Invoice No','Date',
@@ -3996,7 +4119,8 @@
         ];
         csv += row.map(esc).join(',') + '\n';
       });
-      downloadCSV(csv, 'invoices_export.csv');
+      const suffix = (dateFrom || dateTo) ? `_${dateFrom||'start'}_to_${dateTo||'end'}` : '';
+      downloadCSV(csv, `invoices${suffix}.csv`);
     }
 
     // ======= Calculation =======
