@@ -5047,7 +5047,15 @@
       // 2. Sync credentials from cloud → all devices share the same password
       if(db){
         const creds = await cloudPull('app_credentials');
-        if(creds) localStorage.setItem('app_credentials', creds);
+        if(creds){
+          localStorage.setItem('app_credentials', creds);
+        } else {
+          // No credentials in cloud yet — wipe any stale local data so defaults work
+          localStorage.removeItem('app_credentials');
+        }
+      } else {
+        // Offline — wipe stale local credentials so defaults always work
+        localStorage.removeItem('app_credentials');
       }
 
       // 3. Check if already authenticated this session
