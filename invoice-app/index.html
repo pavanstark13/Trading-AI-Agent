@@ -3874,9 +3874,11 @@
     }
 
     // ======= REFACTORED INVOICE NO SEQUENCE =======
+    const MIN_SEQ = 693; // invoices 001-693 already issued; next = 694
     function getSeq(){
       const v = localStorage.getItem('invoice_seq');
-      return v !== null ? parseInt(v, 10) : 689; // invoices 001-689 already used
+      const n = v !== null ? parseInt(v, 10) : 0;
+      return n < MIN_SEQ ? MIN_SEQ : n;
     }
     function setSeq(v){ localStorage.setItem('invoice_seq', String(v)); cloudPush('invoice_seq', String(v)); updateDashboardMetrics(); }
     function pad(n){ return String(n).padStart(3,'0'); }
@@ -4272,14 +4274,20 @@
     }
 
     function newInvoice(){
-      // Consume the next sequence number (only increments once per new invoice)
       const nextNo = consumeNextInvoiceNo();
-
       activeClientPricing = [];
+
+      // Reset date field to current time
+      const dateEl = document.getElementById('invoiceDate');
+      if(dateEl) delete dateEl.dataset.manuallySet;
+
+      const now = new Date();
+      const pad2 = n => String(n).padStart(2,'0');
+      const nowLocal = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}T${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
 
       const inv = {
         invoiceNo: nextNo,
-        invoiceDate: new Date().toISOString().slice(0,16),
+        invoiceDate: nowLocal,
         poNumber: "",
         customer: { name: "", phone: "", address: "", site: "", pin: "" },
         product: { hsnCode: "38245010", hsnDesc: "READY MIX CONCRETE", productName: "Ready Mix Concrete", driverName: "", vehicleNo: "" },
@@ -5063,8 +5071,21 @@
 
       const invoiceNoInput = document.getElementById('invoiceNo');
       invoiceNoInput.readOnly = true; // start in AUTO mode
-      const now = new Date();
-      document.getElementById('invoiceDate').value = now.toISOString().slice(0,16);
+
+      // Live clock — updates invoice date/time every 30 seconds unless user edited it manually
+      function setInvoiceDateTime(){
+        const el = document.getElementById('invoiceDate');
+        if(el && !el.dataset.manuallySet){
+          // Use local time formatted for datetime-local input
+          const now = new Date();
+          const pad2 = n => String(n).padStart(2,'0');
+          el.value = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}T${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+        }
+      }
+      setInvoiceDateTime();
+      setInterval(setInvoiceDateTime, 30000);
+      // Mark as manually set when user edits it
+      document.getElementById('invoiceDate').addEventListener('change', function(){ this.dataset.manuallySet = '1'; });
 
       applyCompanySettings(getCompanySettings());
       setupRowListeners(document);
