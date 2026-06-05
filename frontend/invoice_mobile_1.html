@@ -2591,7 +2591,9 @@
       if(curHash !== expectedHash){ showToast('Current password is incorrect.','error'); return; }
 
       const newHash = await sha256(newUser + ':' + newPass);
-      localStorage.setItem('app_credentials', JSON.stringify({ username: newUser, passHash: newHash }));
+      const newCreds = JSON.stringify({ username: newUser, passHash: newHash });
+      localStorage.setItem('app_credentials', newCreds);
+      cloudPush('app_credentials', newCreds); // sync to all devices
       document.getElementById('cp-current').value = '';
       document.getElementById('cp-new').value = '';
       document.getElementById('cp-confirm').value = '';
@@ -5039,7 +5041,16 @@
 
     // ======= Init & Window Load =======
     async function init(){
-      // Check if already authenticated this session
+      // 1. Init Firebase first so we can pull credentials before showing login
+      initFirebase();
+
+      // 2. Sync credentials from cloud → all devices share the same password
+      if(db){
+        const creds = await cloudPull('app_credentials');
+        if(creds) localStorage.setItem('app_credentials', creds);
+      }
+
+      // 3. Check if already authenticated this session
       checkAuth();
 
       const invoiceNoInput = document.getElementById('invoiceNo');
@@ -5066,11 +5077,9 @@
         if (window.innerWidth > 1024) closeSidebar();
       });
 
-      // Init Firebase and pull latest cloud data (non-blocking)
-      initFirebase();
+      // Pull latest cloud data (Firebase already inited above)
       if(db){
         await loadFromCloud(false);
-        // Refresh UI with cloud data
         applyCompanySettings(getCompanySettings());
         updateDashboardMetrics();
         renderDashboardCharts();
