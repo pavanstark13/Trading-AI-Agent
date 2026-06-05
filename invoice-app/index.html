@@ -4638,15 +4638,29 @@
       const opts = units.map(u=>`<option>${u}</option>`).join('');
       const b = document.getElementById('matBody');
       if (!b) return;
+
+      // Preserve existing row values before rebuild
+      const saved = [];
+      b.querySelectorAll('tr').forEach(tr => {
+        saved.push({
+          desc:  tr.querySelector('.desc')?.value  || '',
+          grade: tr.querySelector('.grade')?.value || '',
+          qty:   tr.querySelector('.qty')?.value   || '',
+          unit:  tr.querySelector('.unit')?.value  || ''
+        });
+      });
+
       b.innerHTML = '';
       for (let i=1; i<=numRows; i++) {
+        const prev = saved[i-1] || {};
+        const unitOpts = units.map(u=>`<option${u===prev.unit?' selected':''}>${u}</option>`).join('');
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="sno">${i}</td>
-          <td><input type="text" placeholder="Item description" class="desc"></td>
-          <td><input type="text" placeholder="Grade/Type" class="grade"></td>
-          <td><input type="text" placeholder="0" style="text-align:center" class="qty"></td>
-          <td><select class="unit">${opts}</select></td>`;
+          <td><input type="text" placeholder="Item description" class="desc" value="${(prev.desc||'').replace(/"/g,'&quot;')}"></td>
+          <td><input type="text" placeholder="Grade/Type" class="grade" value="${(prev.grade||'').replace(/"/g,'&quot;')}"></td>
+          <td><input type="text" placeholder="0" style="text-align:center" class="qty" value="${prev.qty||''}"></td>
+          <td><select class="unit">${unitOpts}</select></td>`;
         b.appendChild(tr);
       }
       b.querySelectorAll('.qty').forEach(inp => inp.addEventListener('input', calcTotal));
@@ -4669,7 +4683,18 @@
     }
 
     function changeRows(d) { numRows = Math.max(1,Math.min(15,numRows+d)); buildRows(); }
-    function onType(el) { curType = el.value; buildRows(); }
+    const TYPE_DESC = { RMC:'Ready Mix Concrete', Blocks:'Solid Concrete Block', Machinery:'Machinery/Equipment', Stock:'Stock Material' };
+    function onType(el) {
+      curType = el.value;
+      // Pre-fill description for rows that are still blank
+      const b = document.getElementById('matBody');
+      const defaultDesc = TYPE_DESC[curType] || '';
+      if(b) b.querySelectorAll('tr').forEach(tr => {
+        const d = tr.querySelector('.desc');
+        if(d && !d.value.trim()) d.value = defaultDesc;
+      });
+      buildRows();
+    }
 
     function clearForm() {
       document.querySelectorAll('#gpForm input:not([type=radio]),#gpForm select').forEach(el=>{
