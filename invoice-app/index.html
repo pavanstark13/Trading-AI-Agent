@@ -2087,56 +2087,80 @@
         </div>
       </div>
 
-      <!-- Cloud Sync Block -->
+      <!-- Cloud Sync Block — password protected -->
       <div class="card" style="margin-top:20px; border-color:#6366f1;">
-        <h3 style="font-size:15px; font-weight:700; margin-bottom:6px; color: #6366f1;">☁️ Firebase Cloud Sync</h3>
-        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
-          Connect to Google Firebase Firestore to keep your data safe in the cloud and accessible from any device. Enter your Firebase project credentials below — they are stored only on this device.
-        </p>
-        <div id="cloud-sync-status" style="font-size:12px; font-weight:700; margin-bottom:14px; color:#6b7280;">💾 Not Connected</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">API Key</label>
-            <input type="text" id="fb-apiKey" placeholder="AIzaSy…" style="font-size:12px;">
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">Auth Domain</label>
-            <input type="text" id="fb-authDomain" placeholder="your-app.firebaseapp.com" style="font-size:12px;">
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">Project ID</label>
-            <input type="text" id="fb-projectId" placeholder="your-project-id" style="font-size:12px;">
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">Storage Bucket</label>
-            <input type="text" id="fb-storageBucket" placeholder="your-app.appspot.com" style="font-size:12px;">
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">Messaging Sender ID</label>
-            <input type="text" id="fb-messagingSenderId" placeholder="123456789" style="font-size:12px;">
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">App ID</label>
-            <input type="text" id="fb-appId" placeholder="1:123:web:abc…" style="font-size:12px;">
-          </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 style="font-size:15px; font-weight:700; color:#6366f1; margin:0;">☁️ Firebase Cloud Sync</h3>
+          <span id="fb-lock-badge" style="font-size:11px; background:#fef3c7; color:#92400e; border:1px solid #fcd34d; border-radius:12px; padding:2px 10px; font-weight:700;">🔒 Locked</span>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn accent" style="background:#6366f1; justify-content:center;" onclick="saveFirebaseConfig()">💾 Save &amp; Connect</button>
-          <button class="btn secondary" style="justify-content:center;" onclick="syncLocalToCloud()">⬆ Push Local → Cloud</button>
-          <button class="btn secondary" style="justify-content:center;" onclick="loadFromCloud(true)">⬇ Pull Cloud → Local</button>
-          <button class="btn secondary danger" style="justify-content:center;" onclick="disconnectFirebase()">✖ Disconnect</button>
+        <div id="cloud-sync-status" style="font-size:12px; font-weight:700; margin-bottom:12px; color:#6b7280;">💾 Not Connected</div>
+
+        <!-- Locked state -->
+        <div id="fb-locked-panel" style="background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:16px; text-align:center;">
+          <div style="font-size:13px; color:#78350f; margin-bottom:12px; line-height:1.6;">
+            🔒 Firebase configuration is admin-protected.<br>
+            <span style="font-size:11px; color:#92400e;">Enter the admin password to access sync settings.</span>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap;">
+            <input type="password" id="fb-unlock-pass" placeholder="Admin password" style="padding:6px 10px; border:1px solid #d1d5db; border-radius:4px; font-size:12px; width:180px;" onkeydown="if(event.key==='Enter') unlockFirebaseSettings()">
+            <button onclick="unlockFirebaseSettings()" style="padding:6px 16px; font-size:12px; background:#6366f1; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:600;">🔓 Unlock</button>
+          </div>
+          <div id="fb-unlock-err" style="font-size:11px; color:#dc2626; margin-top:6px; min-height:16px;"></div>
+        </div>
+
+        <!-- Unlocked config panel (hidden until password verified) -->
+        <div id="fb-config-panel" style="display:none;">
+          <div style="background:#ecfdf5; border:1px solid #6ee7b7; border-radius:6px; padding:8px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; color:#065f46; font-weight:600;">🔓 Admin access granted — auto-locks in 5 min</span>
+            <button onclick="lockFirebaseSettings()" style="font-size:11px; padding:3px 10px; border:1px solid #6ee7b7; border-radius:4px; cursor:pointer; background:#fff; color:#065f46; font-weight:600;">🔒 Lock Now</button>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;">API Key</label>
+              <input type="text" id="fb-apiKey" placeholder="AIzaSy…" style="font-size:12px;">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;">Auth Domain</label>
+              <input type="text" id="fb-authDomain" placeholder="your-app.firebaseapp.com" style="font-size:12px;">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;">Project ID</label>
+              <input type="text" id="fb-projectId" placeholder="your-project-id" style="font-size:12px;">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;">Storage Bucket</label>
+              <input type="text" id="fb-storageBucket" placeholder="your-app.appspot.com" style="font-size:12px;">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;">Messaging Sender ID</label>
+              <input type="text" id="fb-messagingSenderId" placeholder="123456789" style="font-size:12px;">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;">App ID</label>
+              <input type="text" id="fb-appId" placeholder="1:123:web:abc…" style="font-size:12px;">
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn accent" style="background:#6366f1; justify-content:center;" onclick="saveFirebaseConfig()">💾 Save &amp; Connect</button>
+            <button class="btn secondary" style="justify-content:center;" onclick="syncLocalToCloud()">⬆ Push Local → Cloud</button>
+            <button class="btn secondary" style="justify-content:center;" onclick="loadFromCloud(true)">⬇ Pull Cloud → Local</button>
+            <button class="btn secondary danger" style="justify-content:center;" onclick="disconnectFirebase()">✖ Disconnect</button>
+          </div>
         </div>
       </div>
 
-      <!-- Wipe Database Block -->
+      <!-- Wipe Database Block — also password protected -->
       <div class="card" style="margin-top:20px; border-color:#fca5a5; background:rgba(254,226,226,0.2);">
-        <h3 style="font-size:15px; font-weight:700; margin-bottom:8px; color: #dc2626;">Danger Zone</h3>
+        <h3 style="font-size:15px; font-weight:700; margin-bottom:8px; color:#dc2626;">⚠️ Danger Zone</h3>
         <p style="font-size:12px; color:#991b1b; margin-bottom:12px;">
-          This clears all cached records, invoices, gate passes, clients profiles, and payment history in this browser's local database. Please export backups first.
+          Permanently wipes all local invoices, gate passes, customers, and payment history from this browser. Admin password required.
         </p>
-        <button class="btn danger" onclick="wipeLocalDatabase()">
-          ⚠ Wipe Local Storage Database
-        </button>
+        <!-- Locked wipe -->
+        <div id="wipe-locked-panel" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input type="password" id="wipe-unlock-pass" placeholder="Admin password to unlock" style="padding:6px 10px; border:1px solid #fca5a5; border-radius:4px; font-size:12px; width:200px;" onkeydown="if(event.key==='Enter') wipeWithPassword()">
+          <button onclick="wipeWithPassword()" style="padding:6px 14px; font-size:12px; background:#dc2626; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:600;">⚠ Wipe Database</button>
+          <div id="wipe-unlock-err" style="font-size:11px; color:#dc2626; width:100%;"></div>
+        </div>
       </div>
     </div>
 
@@ -3726,6 +3750,69 @@
         }
       };
       reader.readAsText(fileInput.files[0]);
+    }
+
+    // ======= Firebase Settings Lock =======
+    async function unlockFirebaseSettings() {
+      const passInput = document.getElementById('fb-unlock-pass');
+      const errEl     = document.getElementById('fb-unlock-err');
+      const pass      = passInput?.value || '';
+      if(!pass){ if(errEl) errEl.textContent = 'Enter password.'; return; }
+
+      const stored       = JSON.parse(localStorage.getItem('app_credentials') || 'null');
+      const expectedUser = stored ? stored.username : 'admin';
+      const expectedHash = stored ? stored.passHash : await sha256('admin:Niyakrish@690');
+      const inputHash    = await sha256(expectedUser + ':' + pass);
+
+      if(inputHash === expectedHash){
+        document.getElementById('fb-locked-panel').style.display = 'none';
+        document.getElementById('fb-config-panel').style.display = 'block';
+        const badge = document.getElementById('fb-lock-badge');
+        if(badge){ badge.textContent='🔓 Unlocked'; badge.style.cssText='font-size:11px;background:#ecfdf5;color:#065f46;border:1px solid #6ee7b7;border-radius:12px;padding:2px 10px;font-weight:700;'; }
+        if(passInput) passInput.value = '';
+        if(errEl) errEl.textContent = '';
+        clearTimeout(window._fbAutoLockTimer);
+        window._fbAutoLockTimer = setTimeout(lockFirebaseSettings, 5 * 60 * 1000);
+      } else {
+        if(errEl) errEl.textContent = 'Incorrect password.';
+        if(passInput) passInput.value = '';
+      }
+    }
+
+    function lockFirebaseSettings() {
+      const lp = document.getElementById('fb-locked-panel');
+      const cp = document.getElementById('fb-config-panel');
+      const badge = document.getElementById('fb-lock-badge');
+      if(lp) lp.style.display = 'block';
+      if(cp) cp.style.display = 'none';
+      if(badge){ badge.textContent='🔒 Locked'; badge.style.cssText='font-size:11px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:12px;padding:2px 10px;font-weight:700;'; }
+      const pi = document.getElementById('fb-unlock-pass');
+      const ee = document.getElementById('fb-unlock-err');
+      if(pi) pi.value = '';
+      if(ee) ee.textContent = '';
+      clearTimeout(window._fbAutoLockTimer);
+    }
+
+    async function wipeWithPassword() {
+      const passInput = document.getElementById('wipe-unlock-pass');
+      const errEl     = document.getElementById('wipe-unlock-err');
+      const pass      = passInput?.value || '';
+      if(!pass){ if(errEl) errEl.textContent = 'Enter admin password to proceed.'; return; }
+
+      const stored       = JSON.parse(localStorage.getItem('app_credentials') || 'null');
+      const expectedUser = stored ? stored.username : 'admin';
+      const expectedHash = stored ? stored.passHash : await sha256('admin:Niyakrish@690');
+      const inputHash    = await sha256(expectedUser + ':' + pass);
+
+      if(inputHash === expectedHash){
+        if(passInput) passInput.value = '';
+        if(!confirm('⚠️ FINAL WARNING: This will permanently wipe ALL local data — invoices, customers, payments, gate passes. This cannot be undone. Continue?')) return;
+        localStorage.clear();
+        location.reload();
+      } else {
+        if(errEl) errEl.textContent = 'Incorrect password.';
+        if(passInput) passInput.value = '';
+      }
     }
 
     function wipeLocalDatabase() {
